@@ -24,4 +24,9 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id');
     }
 
+    public function savedByPost()
+    {
+            return $this->belongsToMany(User_Listing::class, 'saveds', 'post_id', 'usuario_id');
+    }
+
 }

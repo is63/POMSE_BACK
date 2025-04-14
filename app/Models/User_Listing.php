@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User_Listing extends Model
@@ -22,5 +23,10 @@ class User_Listing extends Model
     public function comment(): HasManymany
     {
         return $this->hasMany(Comment::class, 'post_id');
+    }
+
+    public function savedByUser(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'saveds', 'usuario_id', 'post_id');
     }
 }
