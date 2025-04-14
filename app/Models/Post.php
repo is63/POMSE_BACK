@@ -26,11 +26,11 @@ class Post extends Model
 
     public function savedByPost()
     {
-            return $this->belongsToMany(User_Listing::class, 'saveds', 'post_id', 'usuario_id');
+            return $this->belongsToMany(User_Listing::class, 'saveds', 'post_id', 'usuario_id')->withTimestamps();
     }
 
     public function likeByPost()
     {
-        return $this->belongsToMany(User_Listing::class, 'likes', 'post_id', 'usuario_id');
+        return $this->belongsToMany(User_Listing::class, 'likes', 'post_id', 'usuario_id')->withTimestamps();
     }
 }
