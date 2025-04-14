@@ -20,7 +20,7 @@ class User_Listing extends Model
         return $this->hasMany(Post::class,'usuario_id');
     }
 
-    public function comment(): HasManymany
+    public function comment(): HasMany
     {
         return $this->hasMany(Comment::class, 'post_id');
     }
@@ -28,5 +28,10 @@ class User_Listing extends Model
     public function savedByUser(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'saveds', 'usuario_id', 'post_id');
+    }
+
+    public function likeByUser(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'likes', 'usuario_id', 'post_id');
     }
 }

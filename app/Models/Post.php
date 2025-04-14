@@ -29,4 +29,8 @@ class Post extends Model
             return $this->belongsToMany(User_Listing::class, 'saveds', 'post_id', 'usuario_id');
     }
 
+    public function likeByPost()
+    {
+        return $this->belongsToMany(User_Listing::class, 'likes', 'post_id', 'usuario_id');
+    }
 }

@@ -4,14 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('saveds', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->foreignId('usuario_id')->constrained('users_listing');
             $table->foreignId('post_id')->constrained('posts');
             $table->timestamp('saved_at')->useCurrent();
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saveds');
+        Schema::dropIfExists('likes');
     }
 };
