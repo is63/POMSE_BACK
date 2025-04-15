@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('friendships', function (Blueprint $table) {
             $table->foreignId('usuario_id')->constrained('users');
             $table->foreignId('amigo_id')->constrained('users');
-            $table->boolean('friend')->default(false);
+            $table->boolean('accepted')->default(false);
             $table->timestamps();
 
             $table->primary(['usuario_id', 'amigo_id']);

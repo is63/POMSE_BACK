@@ -31,3 +31,37 @@ Tabla likes: Exactamente igual que la tabla de Saveds
     likedByUser('usuario_id'(FK), 'post_id'(FK))
 }
 
+Tabla Friendships
+{
+    'usuario_id'(FK), 'amigo_id'(FK)
+}
+    $user->enviarSolicitud($user2) //enviar solicitud (Crea el enlace en la tabla pero con el booleano de aceppted en false)
+    $user->aceptarSolicitud($user2) //aceptar solicitud (Crea el enlace en la tabla pero con el booleano de aceppted en true)
+    $user->rechazarAmistad($user2) //rechazar solicitud (Borra el enlace en la tabla)
+
+    Funciones adicionales:
+    $user->amigos() //Devuelve todos los amigos de un usuario
+    $user->solicitudesRecibidas() //Devuelve todas las solicitudes de amistad recibidas
+    $user->solicitudesEnviadas() //Devuelve todas las solicitudes de amistad enviadas
+    $user->esAmigo($user2) //Devuelve true o false si el usuario es amigo de otro
+
+}
+
+Tabla Chats:
+{
+participante_1 (Fk), participante_2 (Fk)
+    $user->chats() //Devuelve todos los chats de un usuario
+    $user->eliminarChat($chat) //Elimina un chat
+    $user->crearChat($user2) //Crea un nuevo chat entre dos usuarios
+
+
+    ##Ejemplo de crear un chat:
+
+$user->crearChat($user2); //Crea un nuevo chat entre dos usuarios
+$user->eliminarChat($chat); //Elimina un chat
+$user->chats(); //Devuelve todos los chats de un usuario
+
+}
+
+
+Tabla Messages;

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Error;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -87,7 +88,7 @@ class User extends Authenticatable
     }
 
 // Amigos confirmados (simetrico)
-    public function amigos()
+    public function friends()
     {
         $enviadas = $this->solicitudesEnviadas()->wherePivot('friend', true)->get();
         $recibidas = $this->solicitudesRecibidas()->wherePivot('friend', true)->get();
@@ -96,6 +97,11 @@ class User extends Authenticatable
     }
     public function enviarSolicitud(User $usuario)
     {
+
+        if($this->id == $usuario->id) {
+            throw new error('no se puede enviar una solicitud a si mismo'); // No se puede enviar solicitud a uno mismo
+        }
+
         $id1 = min($this->id, $usuario->id);
         $id2 = max($this->id, $usuario->id);
 
@@ -125,7 +131,7 @@ class User extends Authenticatable
             ->update(['friend' => true, 'updated_at' => now()]);
     }
 
-    public function cancelarSolicitud(User $usuario)
+    public function rechazarAmistad(User $usuario) //Sirve para borrar la amistad de la tabla este o no confirmada
     {
         DB::table('friendships')
             ->where(function ($query) use ($usuario) {
@@ -151,19 +157,25 @@ class User extends Authenticatable
     }
 
     //-------Funcines para el chat ------------------//
-    public function chatsid1(): HasMany
+    public function chat($id)
     {
-        return $this->hasMany(Chat::class, 'participante_1');
+        return Chat::where(function ($query) {
+            $query->where('participante_1', $this->id)
+                ->orWhere('participante_2', $this->id);
+        })->findOrFail($id);
     }
 
-    public function chatsid2(): HasMany
+    public function eliminarChat($id)
     {
-        return $this->hasMany(Chat::class, 'participante_2');
+        Chat::where(function ($query) {
+            $query->where('participante_1', $this->id)
+                ->orWhere('participante_2', $this->id);
+        })->where('id', $id)->delete();
     }
 
-    public function allChats() : Colection //   ~Array~
+    public function crearChat(User $usuario)
     {
-        return $this->chatsid1->merge($this->chatsid2);
+        Chat::create(['participante_1' => $this->id, 'participante_2' => $usuario->id]);
     }
 
 

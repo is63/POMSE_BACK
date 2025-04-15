@@ -11,11 +11,12 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('chats', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('participante_1')->constrained('users');
             $table->foreignId('participante_2')->constrained('users');
             $table->timestamps();
 
-            $table->primary(['participante_1', 'participante_2']);
+            $table->unique(['participante_1', 'participante_2']);
         });
     }
 
