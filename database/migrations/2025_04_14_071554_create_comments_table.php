@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('texto',length: 500);
             $table->string('imagen')->nullable();
-            $table->foreignId('usuario_id')->constrained('users_listing')->cascadeOnDelete();
+            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->timestamps();
         });

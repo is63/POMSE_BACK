@@ -14,9 +14,9 @@ class Post extends Model
         'titulo', 'foto', 'descripcion', 'usuario_id'
     ];
 
-    public function user_listing(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User_Listing::class, 'usuario_id');
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     public function comment(): HasMany
@@ -26,11 +26,11 @@ class Post extends Model
 
     public function savedByPost()
     {
-            return $this->belongsToMany(User_Listing::class, 'saveds', 'post_id', 'usuario_id')->withTimestamps();
+            return $this->belongsToMany(User_::class, 'saveds', 'post_id', 'usuario_id')->withTimestamps();
     }
 
     public function likeByPost()
     {
-        return $this->belongsToMany(User_Listing::class, 'likes', 'post_id', 'usuario_id')->withTimestamps();
+        return $this->belongsToMany(User_::class, 'likes', 'post_id', 'usuario_id')->withTimestamps();
     }
 }

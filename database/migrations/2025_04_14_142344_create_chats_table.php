@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('likes', function (Blueprint $table) {
-            $table->foreignId('usuario_id')->constrained('users');
-            $table->foreignId('post_id')->constrained('posts');
-            $table->timestamp('saved_at')->useCurrent();
+        Schema::create('chats', function (Blueprint $table) {
+            $table->foreignId('participante_1')->constrained('users');
+            $table->foreignId('participante_2')->constrained('users');
+            $table->timestamps();
 
-            $table->primary(['usuario_id', 'post_id']);
+            $table->primary(['participante_1', 'participante_2']);
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::dropIfExists('chats');
     }
 };

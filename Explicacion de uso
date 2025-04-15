@@ -1,0 +1,21 @@
+
+User:  Metodos basicos de los modelos, ::find(), ::create(), ::update(), ::delete(){
+        'usuario', 'email', 'contrasena', 'bio'->nullable, 'foto' ->default
+}
+
+Post: Metodos básicos : find(), create(), update(), delete()
+{
+            'titulo' ->nullable, 'foto' ->nullable , 'descripcion' ->nullable, 'usuario_id' => id de un usuario de User_Listing
+          ##Hacer una comprobacion para que al menos 1 de los campos nullable tenga 1 valor
+}
+
+Comment:
+{
+      'texto', 'imagen'->nullable, 'usuario_id'(FK), 'post_id'(FK)
+
+}
+
+Tabla Saveds: Usar solamente el metodo el User para evitar lios
+{
+    savedByUser('usuario_id'(FK), 'post_id'(FK))
+}

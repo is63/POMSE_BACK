@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('friendships', function (Blueprint $table) {
-            $table->foreignId('usuario_id')->constrained('users_listing');
-            $table->foreignId('amigo_id')->constrained('users_listing');
+            $table->foreignId('usuario_id')->constrained('users');
+            $table->foreignId('amigo_id')->constrained('users');
             $table->boolean('friend')->default(false);
             $table->timestamps();
 

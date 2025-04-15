@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('saveds', function (Blueprint $table) {
-            $table->foreignId('usuario_id')->constrained('users_listing');
+            $table->foreignId('usuario_id')->constrained('users');
             $table->foreignId('post_id')->constrained('posts');
             $table->timestamp('saved_at')->useCurrent();
 
