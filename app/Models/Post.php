@@ -24,13 +24,16 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id');
     }
 
-    public function savedByPost()
+    public function savedByUsers(): BelongsToMany
     {
-            return $this->belongsToMany(User_::class, 'saveds', 'post_id', 'usuario_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'saveds', 'post_id', 'usuario_id')
+            ->withPivot('saved_at')
+            ->withTimestamps();
     }
 
     public function likeByPost()
     {
-        return $this->belongsToMany(User_::class, 'likes', 'post_id', 'usuario_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'likes', 'post_id', 'usuario_id')
+            ->withPivot('saved_at');
     }
 }

@@ -15,11 +15,11 @@ class Chat extends Model
 
     public function participante1(): BelongsTo
     {
-        return $this->belongsTo(User_::class, 'participante_1');
+        return $this->belongsTo(User::class, 'participante_1');
     }
 
     public function participante2(): BelongsTo
     {
-        return $this->belongsTo(User_::class, 'participante_2');
+        return $this->belongsTo(User::class, 'participante_2');
     }
 }

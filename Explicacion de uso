@@ -3,11 +3,13 @@ User:  Metodos basicos de los modelos, ::find(), ::create(), ::update(), ::delet
         'usuario', 'email', 'contrasena', 'bio'->nullable, 'foto' ->default
 }
 
+
 Post: Metodos básicos : find(), create(), update(), delete()
 {
             'titulo' ->nullable, 'foto' ->nullable , 'descripcion' ->nullable, 'usuario_id' => id de un usuario de User_Listing
           ##Hacer una comprobacion para que al menos 1 de los campos nullable tenga 1 valor
 }
+
 
 Comment:
 {
@@ -15,7 +17,17 @@ Comment:
 
 }
 
+
 Tabla Saveds: Usar solamente el metodo el User para evitar lios
+    !!! Se usa attach para añadir y toggle para desativar o activar el "guardado" y detach para borrar
 {
     savedByUser('usuario_id'(FK), 'post_id'(FK))
 }
+    $user->savePost()->attach($post->id); //->toggle($post->id) // detach($post->id)
+
+
+Tabla likes: Exactamente igual que la tabla de Saveds
+{
+    likedByUser('usuario_id'(FK), 'post_id'(FK))
+}
+

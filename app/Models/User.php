@@ -57,21 +57,23 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class, 'post_id');
     }
 
-    public function savedByUser(): BelongsToMany
+    public function savePost(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'saveds', 'usuario_id', 'post_id')->withTimestamps();
+        return $this->belongsToMany(Post::class, 'saveds', 'usuario_id', 'post_id')
+            ->withPivot('saved_at');
     }
 
-    public function likeByUser(): BelongsToMany
+    public function likePost(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'likes', 'usuario_id', 'post_id')->withTimestamps();
+        return $this->belongsToMany(Post::class, 'likes', 'usuario_id', 'post_id')
+            ->withPivot('saved_at');
     }
 
 
     //------------ Funciones de Amistad -------------------------- //
     public function solicitudesEnviadas()
     {
-        return $this->belongsToMany(User_::class, 'friendships', 'usuario_id', 'amigo_id')
+        return $this->belongsToMany(User::class, 'friendships', 'usuario_id', 'amigo_id')
             ->withPivot('friend')
             ->withTimestamps();
     }
@@ -79,7 +81,7 @@ class User extends Authenticatable
 // Usuarios que me enviaron solicitud
     public function solicitudesRecibidas()
     {
-        return $this->belongsToMany(User_::class, 'friendships', 'amigo_id', 'usuario_id')
+        return $this->belongsToMany(User::class, 'friendships', 'amigo_id', 'usuario_id')
             ->withPivot('friend')
             ->withTimestamps();
     }
@@ -92,7 +94,7 @@ class User extends Authenticatable
 
         return $enviadas->merge($recibidas);
     }
-    public function enviarSolicitud(User_ $usuario)
+    public function enviarSolicitud(User $usuario)
     {
         $id1 = min($this->id, $usuario->id);
         $id2 = max($this->id, $usuario->id);
@@ -115,7 +117,7 @@ class User extends Authenticatable
     }
 
 
-    public function aceptarSolicitud(User_ $usuario)
+    public function aceptarSolicitud(User $usuario)
     {
         DB::table('friendships')
             ->where('usuario_id', $usuario->id)
@@ -123,7 +125,7 @@ class User extends Authenticatable
             ->update(['friend' => true, 'updated_at' => now()]);
     }
 
-    public function cancelarSolicitud(User_ $usuario)
+    public function cancelarSolicitud(User $usuario)
     {
         DB::table('friendships')
             ->where(function ($query) use ($usuario) {
@@ -136,7 +138,7 @@ class User extends Authenticatable
             })
             ->delete();
     }
-    public function esAmigoDe(User_ $usuario): bool
+    public function esAmigoDe(User $usuario): bool
     {
         $id1 = min($this->id, $usuario->id);
         $id2 = max($this->id, $usuario->id);
