@@ -48,6 +48,23 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (!filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                throw new \Exception('El email introducido no tiene un formato válido.');
+            }
+        });
+
+        static::updating(function ($user) {
+            if (!filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                throw new \Exception('El email introducido no tiene un formato válido.');
+            }
+        });
+    }
+
     public function post(): HasMany
     {
         return $this->hasMany(Post::class, 'usuario_id');
@@ -178,5 +195,14 @@ class User extends Authenticatable
         Chat::create(['participante_1' => $this->id, 'participante_2' => $usuario->id]);
     }
 
+    public function mensajesEnviados()
+    {
+        return $this->hasMany(Message::class, 'emisor_id');
+    }
+
+    public function mensajesRecibidos()
+    {
+        return $this->hasMany(Message::class, 'receptor_id');
+    }
 
 }

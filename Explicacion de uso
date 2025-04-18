@@ -50,10 +50,11 @@ Tabla Friendships
 Tabla Chats:
 {
 participante_1 (Fk), participante_2 (Fk)
+
+
     $user->chats() //Devuelve todos los chats de un usuario
     $user->eliminarChat($chat) //Elimina un chat
     $user->crearChat($user2) //Crea un nuevo chat entre dos usuarios
-
 
     ##Ejemplo de crear un chat:
 
@@ -64,4 +65,11 @@ $user->chats(); //Devuelve todos los chats de un usuario
 }
 
 
-Tabla Messages;
+Tabla Messages;  ->message->update(['texto' => 'Nuevo texto'])
+{
+    'emisor_id'(FK), 'receptor_id'(FK), 'chat_id'(FK), 'texto', 'imagen'->nullable
+    $user->mensajes() //Devuelve todos los mensajes de un usuario
+    $user->enviarMensaje($chat, $mensaje) //Envía un mensaje a un chat
+    $user->recibirMensaje($chat, $mensaje) //Recibe un mensaje de un chat
+
+}

@@ -14,6 +14,17 @@ class Post extends Model
         'titulo', 'foto', 'descripcion', 'usuario_id'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($post) {
+            if (empty($post->titulo) && empty($post->imagen) && empty($post->descripcion)) {
+                throw new \Exception('El post debe tener al menos un título, una imagen o una descripción.');
+            }
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'usuario_id');
@@ -24,7 +35,7 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'post_id');
     }
 
-    public function savedByUsers(): BelongsToMany
+    public function savedByUsers()
     {
         return $this->belongsToMany(User::class, 'saveds', 'post_id', 'usuario_id')
             ->withPivot('saved_at')
