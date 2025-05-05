@@ -13,17 +13,20 @@
 
 <body>
 <div class="min-h-full">
+
     <x-nav_bar/>
 
-    <div class="flex">
-        <?php
-        $tables = DB::select('SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "POMSE"');
-        $tables = array_slice($tables, 2);
-        array_splice($tables, 5, 2);
-        array_splice($tables, 7, 1);
-        ?>
 
-            <x-side_bar :tables="$tables"/>
+    <div class="flex">
+        @php
+            $tables = DB::select('SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = "POMSE"');
+            $tables = array_slice($tables, 2);
+            array_splice($tables, 5, 2);
+            array_splice($tables, 7, 1);
+        @endphp
+
+        <x-side_bar :tables="$tables"/>
+
 
         <main class="flex-1 p-4">
             @if(isset($table_name))

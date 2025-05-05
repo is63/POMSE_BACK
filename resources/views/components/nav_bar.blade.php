@@ -1,35 +1,26 @@
-<nav class="bg-gray-900 w-full">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex h-16 items-center justify-end">
-                <div class="flex items-center">
-                    <div class="hidden md:block">
-
-                        <div class="flex items-baseline space-x-6">
-                            <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">Home</a>
-                            <form action="/logout" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-                                    Log out
-                                </button>
-                            </form>
+<nav class="bg-gradient-to-r from-blue-600 to-blue-500 w-full border-b border-gray-800">
+                        <div class="flex h-16 items-center">
+                            <!-- Parte Izquierda -->
+                            <div class="flex h-full pr-24 pl-24 pt-4 text-center ">
+                                <p class="text-white font-semibold text-2xl">Tablas</p>
+                            </div>
+                            <!-- Parte Derecha -->
+                            <div class="flex justify-end w-full pr-4 mr-12">
+                                <div class="hidden md:block">
+                                    <div class="flex space-x-6">
+                                        <a href="/"
+                                           class="bg-white hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
+                                            Home
+                                        </a>
+                                        <form action="/logout" method="POST">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="bg-white hover:bg-red-700 text-red-600 font-semibold hover:text-white py-2 px-4 border border-red-600 hover:border-transparent rounded">
+                                                Log out
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile menu, show/hide based on menu state. -->
-        <div class="md:hidden" id="mobile-menu">
-            <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="/" class="bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
-                   aria-current="page">Home</a>
-                <a href="/"
-                   class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium">About</a>
-
-            </div>
-
-        </div>
-
-    </nav>
+                    </nav>
