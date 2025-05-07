@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('foto')->default('public/imagenes/icono-usuario.png');
             $table->boolean('verificado')->default(false);
             $table->string('password');
+            $table->boolean('is_admin')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

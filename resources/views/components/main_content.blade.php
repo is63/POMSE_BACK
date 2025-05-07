@@ -95,7 +95,6 @@
     @endif
 </div>
 
-    <!-- Busqueda de página -->
     <div>
         <input type="text" placeholder="Ir a página..." class="px-4 py-2 border border-gray-300 rounded"
                onkeydown="if(event.key === 'Enter') window.location.href='?page=' + this.value">

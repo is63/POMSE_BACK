@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 // Si no se esta Autorizado no se puede acceder
 Route::middleware('auth')->group(function () {
@@ -26,6 +27,11 @@ Route::middleware('auth')->group(function () {
         return view('table', compact(['table', 'table_data']));
     });
 });
+
+
+Route::resource('users', UserController::class);
+
+
 
 //Rutas para la autorizacion
 

@@ -17,9 +17,10 @@ class DatabaseSeeder extends Seeder
 
         //Usuario Admin por defecto
         User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('admin'),
+            'usuario' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => bcrypt('admin'),
+            'is_admin' => true,
         ]);
     }
 }
