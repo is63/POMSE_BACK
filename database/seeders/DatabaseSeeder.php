@@ -2,8 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Chat;
+use App\Models\Friendship;
+use App\Models\Like;
+use App\Models\Message;
+use App\Models\Post;
+use App\Models\Saved;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Comment;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,14 +19,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+    User::factory(10)->create();
+    Post::factory(10)->create();
+    Comment::factory(10)->create();
+    for($i = 0; $i < 10; $i++){
+        try{Friendship::factory()->create();}
+        catch (\Exception $e){}
+    }
+    for($i = 0; $i < 10; $i++) {
+        try {
+            Saved::factory()->create();
+        }
+        catch (\Exception $e){}
+        }
+    for($i = 0; $i < 10; $i++){
+        try {
+            Like::factory()->create();
+        }
+        catch (\Exception $e){}
+    }
+    for ($i = 0; $i < 10; $i++){
+        try {
+            Friendship::factory()->create();
+        }
+        catch (\Exception $e){}
+    }
+    for ($i = 0; $i < 10; $i++){
+        try {
+            Chat::factory()->create();
+        }
+        catch (\Exception $e){}
+    }
 
-        //Usuario Admin por defecto
-        User::factory()->create([
-            'usuario' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('admin'),
-            'is_admin' => true,
-        ]);
+    Message::factory(10)->create();
     }
 }

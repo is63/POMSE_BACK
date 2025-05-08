@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/table/{table}', function ($table) {
         $databaseName = DB::getDatabaseName();
         $table_data = DB::table($table)->paginate(5);
-        return view('table', compact(['table', 'table_data']));
+        return view($table.'.index', compact(['table', 'table_data']));
     });
 });
 
