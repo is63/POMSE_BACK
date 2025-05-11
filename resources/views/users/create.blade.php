@@ -3,6 +3,11 @@
 @section('main')
     <div class="max-w-4xl mx-auto mt-8">
         <h1 class="text-2xl font-bold text-center mb-6">Crear Nuevo Usuario</h1>
+        @session('error')
+        <div id="error-message" class="bg-red-500 text-white p-4 rounded mb-4">
+            {{ session('error') }}
+        </div>
+        @endsession
         <form method="POST" action="{{ url('/users') }}" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             @csrf
             <div class="bg-gray-50 px-4 py-3 rounded-t mb-6">
@@ -120,4 +125,5 @@
             }
         }
     </script>
+    <x-time_mensage/>
 @endsection

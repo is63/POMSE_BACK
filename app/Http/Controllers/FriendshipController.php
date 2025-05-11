@@ -42,7 +42,7 @@ class FriendshipController
             DB::table($table_name)->insert($data);
             return redirect()->route('friendships.index')->with('success', 'Usuario creado exitosamente.');
         } catch (\Exception $e) {
-            return redirect()->route('friendships.index')->with('error', 'Error al crear la amistad: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al crear la amistad: ' . $e->getMessage());
         }
     }
 
@@ -78,13 +78,13 @@ class FriendshipController
 
             // Verificar si se actualizó
             if ($updated === 0) {
-                throw new \Exception('No se encontró la amistad para actualizar.');
+                return redirect()->back()->with('error', 'La amistad no fue actualizada.');
             }
 
             return redirect()->route('friendships.index')->with('success', 'Amistad actualizada correctamente.');
 
         } catch (\Exception $e) {
-            return redirect()->route('friendships.index')->with('error', 'Error al actualizar la amistad: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al actualizar la amistad: ' . $e->getMessage());
         }
     }
 
@@ -100,13 +100,13 @@ class FriendshipController
 
             // Verificar si la eliminación fue exitosa
             if ($deleted === 0) {
-                return redirect()->route('friendships.index')->with('error', 'La amistad no fue eliminada.');
+                return redirect()->back()->with('error', 'La amistad no fue eliminada.');
             }
 
             return redirect()->route('friendships.index')->with('success', 'Amistad eliminada correctamente.');
 
         } catch (\Exception $e) {
-            return redirect()->route('friendships.index')->with('error', 'Error al eliminar la amistad: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al eliminar la amistad: ' . $e->getMessage());
         }
     }
 

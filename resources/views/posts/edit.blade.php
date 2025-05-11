@@ -7,63 +7,63 @@
               class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             @csrf
             @method('PUT')
-
-            <div class="mb-4">
-                <label for="titulo" class="block text-gray-700 font-bold mb-2">Título:</label>
-                <input type="text" name="titulo" id="titulo" placeholder="Título"
-                       value="{{ old('titulo', $post->titulo) }}"
-                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
-                       required>
-                @error('titulo')
-                <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="descripcion" class="block text-gray-700 font-bold mb-2">Descripción:</label>
-                <textarea name="descripcion" id="descripcion" placeholder="Descripción"
-                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">{{ old('descripcion', $post->descripcion) }}</textarea>
-                @error('descripcion')
-                <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="mb-4">
-                <label for="imagen" class="block text-gray-700 font-bold mb-2">Imagen:</label>
-                <div class="flex items-center space-x-4">
-                    <input type="file" name="imagen" id="imagen" class="hidden" onchange="updateButtonText()">
-                    <button type="button" id="uploadButton"
-                            onclick="document.getElementById('imagen').click()"
-                            class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Seleccionar Archivo
-                    </button>
+            <div class="bg-gray-50 px-4 py-3 rounded-t mb-6">
+                <div class="mb-4">
+                    <label for="titulo" class="block text-gray-700 font-bold mb-2">Título:</label>
+                    <input type="text" name="titulo" id="titulo" placeholder="Título"
+                           value="{{ old('titulo', $post->titulo) }}"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                           required>
+                    @error('titulo')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
-                @if($post->imagen)
-                    <p class="mt-2 text-sm text-gray-600">Imagen actual: <a href="{{ asset($post->imagen) }}"
-                                                                            target="_blank"
-                                                                            class="text-blue-500 underline">Ver Imagen</a></p>
-                @endif
-                @error('imagen')
-                <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                @enderror
+
+                <div class="mb-4">
+                    <label for="descripcion" class="block text-gray-700 font-bold mb-2">Descripción:</label>
+                    <textarea name="descripcion" id="descripcion" placeholder="Descripción"
+                              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">{{ old('descripcion', $post->descripcion) }}</textarea>
+                    @error('descripcion')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label for="imagen" class="block text-gray-700 font-bold mb-2">Imagen:</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="file" name="imagen" id="imagen" class="hidden" onchange="updateButtonText()">
+                        <button type="button" id="uploadButton"
+                                onclick="document.getElementById('imagen').click()"
+                                class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Seleccionar Archivo
+                        </button>
+                    </div>
+                    @if($post->imagen)
+                        <p class="mt-4 text-gray-700 font-bold">Imagen actual:</p>
+                        <img src="{{ asset($post->imagen) }}" alt="Imagen del post" class="my-2" width="200">
+                    @endif
+                    @error('imagen')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario:</label>
+                    <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario"
+                           value="{{ old('usuario_id', $post->usuario_id) }}"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
+                    <datalist id="usuarios">
+                        @foreach($usuarios as $usuario)
+                            <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
+                        @endforeach
+                    </datalist>
+                    @error('usuario_id')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
-            <div class="mb-4">
-                <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario:</label>
-                <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario"
-                       value="{{ old('usuario_id', $post->usuario_id) }}"
-                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
-                <datalist id="usuarios">
-                    @foreach($usuarios as $usuario)
-                        <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
-                    @endforeach
-                </datalist>
-                @error('usuario_id')
-                <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mt-4">
                 <button type="submit"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Guardar Cambios

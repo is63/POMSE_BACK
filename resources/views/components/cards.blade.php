@@ -8,7 +8,7 @@
                   d="M5.121 17.804A4 4 0 0112 15a4 4 0 016.879 2.804M15 11a4 4 0 11-8 0 4 4 0 018 0z"/>
         </svg>
     </a>
-    <a href="{{ url('/table/friendships') }}"
+    <a href="{{ url('/friendships') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Friendships</h3>
         <svg height="44px" width="44px" fill="#000000" viewBox="-3 0 32 32" version="1.1"
@@ -17,7 +17,7 @@
                 d="M17.25 20.5c1.281 0.719 2 1.906 1.875 3.125-0.063 0.75-0.031 0.75-1 0.875-0.594 0.063-4.375 0.094-8.219 0.094-4.375 0-8.938-0.031-9.281-0.125-1.281-0.344-0.531-2.719 1.156-3.844 1.344-0.844 4.063-2.156 4.813-2.313 1.031-0.219 1.156-0.875 0-2.844-0.25-0.469-0.531-1.813-0.563-3.25-0.031-2.313 0.375-3.875 2.406-4.656 0.375-0.125 0.813-0.188 1.219-0.188 1.344 0 2.594 0.75 3.125 1.844 0.719 1.469 0.375 5.313-0.375 6.719-0.906 1.594-0.813 2.094 0.188 2.344 0.625 0.156 2.688 1.125 4.656 2.219zM24.094 18.531c1 0.531 1.563 1.5 1.469 2.438-0.031 0.563-0.031 0.594-0.781 0.688-0.375 0.063-2.344 0.094-4.656 0.094-0.406-0.969-1.188-1.844-2.25-2.406-1.219-0.688-2.656-1.406-3.75-1.875 0.719-0.344 1.344-0.625 1.625-0.688 0.781-0.188 0.875-0.625 0-2.188-0.219-0.375-0.469-1.438-0.5-2.563-0.031-1.813 0.375-3.063 1.938-3.656 0.313-0.094 0.656-0.156 0.969-0.156 1.031 0 2 0.563 2.406 1.438 0.531 1.156 0.281 4.156-0.281 5.281-0.688 1.25-0.625 1.625 0.156 1.813 0.5 0.125 2.094 0.906 3.656 1.781z"></path>
         </svg>
     </a>
-    <a href="{{ url('/table/messages') }}"
+    <a href="{{ url('/messages') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Messages</h3>
         <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,7 +26,7 @@
                 stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </a>
-    <a href="{{ url('/table/chats') }}"
+    <a href="{{ url('/chats') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Chats</h3>
         <svg height="44px" width="44px" viewBox="0 0 1024 1024" class="icon" version="1.1"
@@ -56,7 +56,7 @@
             </g>
         </svg>
     </a>
-    <a href="{{ url('/table/posts') }}"
+    <a href="{{ url('/posts') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Posts</h3>
         <svg height="44px" width="44px" viewBox="0 0 1024 1024" fill="#000000" class="icon"
@@ -156,7 +156,7 @@
             </g>
         </svg>
     </a>
-    <a href="{{ url('/table/likes') }}"
+    <a href="{{ url('/likes') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Likes</h3>
         <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none"
@@ -167,7 +167,7 @@
                 stroke-linejoin="round"/>
         </svg>
     </a>
-    <a href="{{ url('/table/comments') }}"
+    <a href="{{ url('/comments') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Comments</h3>
         <svg height="44px" width="44px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +186,7 @@
             </g>
                         </svg>
     </a>
-    <a href="{{ url('/table/saveds') }}"
+    <a href="{{ url('/saveds') }}"
        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Saveds</h3>
         <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none"

@@ -49,6 +49,7 @@ Route::get('friendships/{usuario_id}/{amigo_id}/edit', [FriendshipController::cl
 Route::put('friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'update']);
 Route::delete('friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'destroy']);
 
+Route::get('/chats/{chat}/participants', [MessageController::class, 'getChatParticipants']);
 Route::resource('messages', MessageController::class);
 Route::resource('chats', ChatController::class);
 
