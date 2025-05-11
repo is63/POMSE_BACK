@@ -1,10 +1,12 @@
 <nav class="bg-gradient-to-r from-blue-600 to-blue-500 w-full border-b border-gray-800">
     <div class="flex h-16 items-center">
         <!-- Parte Izquierda -->
+        <a href="/" class="flex items-center flex-shrink-0 text-white">
         <div class="flex h-full pr-24 pl-14 items-center text-center">
-            <span> <img width="64px" src="{{asset('favicon2.png')}}" alt=""/></span>
+            <span> <img width="32px" src="{{asset('favicon2.png')}}" alt=""/></span>
             <p class="text-black font-semibold text-2xl">POMSE</p>
         </div>
+        </a>
         <!-- Parte Derecha -->
         <div class="flex justify-end w-full pr-4 mr-12">
             <div class="hidden md:block">

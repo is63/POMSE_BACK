@@ -3,7 +3,7 @@
         <div class="p-4">
             <ul class="mt-4 space-y-4 overflow-y-auto">
                 <li>
-                    <a href="{{ url('/table/users') }}"
+                    <a href="{{ url('/users') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Users</span>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" fill="none"
@@ -15,7 +15,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ url('/table/friendships') }}"
+                    <a href="{{ url('friendships') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Friendships</span>
                         <svg height="24px" width="24px" fill="#000000" viewBox="-3 0 32 32" version="1.1"
@@ -33,7 +33,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ url('/table/messages') }}"
+                    <a href="{{ url('messages') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Messages</span>
                         <svg height="24px" width="24px" viewBox="0 0 24 24" fill="none"
@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/table/chats') }}"
+                    <a href="{{ url('chats') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Chats</span>
                         <svg height="24px" width="24px" viewBox="0 0 1024 1024" class="icon" version="1.1"
@@ -78,7 +78,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/table/posts') }}"
+                    <a href="{{ url('posts') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Posts</span>
                         <svg height="24px" width="24px" viewBox="0 0 1024 1024" fill="#000000" class="icon"
@@ -180,7 +180,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/table/likes') }}"
+                    <a href="{{ url('likes') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Likes</span>
                         <svg height="24px" width="24px" viewBox="0 0 24 24" fill="none"
@@ -193,7 +193,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/table/comments') }}"
+                    <a href="{{ url('comments') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Comments</span>
                         <svg height="24px" width="24px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +214,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/table/saveds') }}"
+                    <a href="{{ url('saveds') }}"
                        class="flex items-center justify-evenly bg-gray-100 rounded-lg shadow-md p-4 hover:bg-gray-300">
                         <span class="text-lg font-semibold">Saveds</span>
                         <svg height="24px" width="24px" viewBox="0 0 24 24" fill="none"

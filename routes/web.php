@@ -4,6 +4,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\SavedController;
+
 
 // Si no se esta Autorizado no se puede acceder
 Route::middleware('auth')->group(function () {
@@ -21,15 +29,19 @@ Route::middleware('auth')->group(function () {
         return view('welcome', compact('tables'));
     });
 
-    Route::get('/table/{table}', function ($table) {
-        $databaseName = DB::getDatabaseName();
-        $table_data = DB::table($table)->paginate(5);
-        return view($table.'.index', compact(['table', 'table_data']));
-    });
 });
 
 
 Route::resource('users', UserController::class);
+Route::resource('posts', PostController::class);
+Route::resource('comments', CommentController::class);
+Route::resource('likes', LikeController::class);
+Route::resource('saveds', SavedController::class);
+Route::resource('friendships', FriendshipController::class);
+Route::resource('messages', MessageController::class);
+Route::resource('chats', ChatController::class);
+
+
 
 
 

@@ -2,10 +2,6 @@
 @section('main')
     @props(['$table_name', '$table_data'])
 
-    @php
-        $table_name = $table;
-    @endphp
-
     <!-- Contenedor principal con estilo de fondo, bordes redondeados y sombra -->
     <div class="bg-gray-100 rounded-lg shadow-md p-6">
         <!-- Título que muestra el nombre de la tabla -->
@@ -17,13 +13,9 @@
             <!-- Mensaje que indica que no hay datos en la tabla -->
             <p class="text-center text-gray-500 mt-4">La tabla está vacía.</p>
         @else
-            <!-- Botón para crear -->
-            <div class="mb-4 mt-8 ml-16 text-left">
-                <a href="{{ url('/') }}"
-                   class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
-                    Crear
-                </a>
-            </div>
+            <!-- Barra de búsqueda dinámica -->
+            <x-search_bar :fields="array_keys((array) $table_data->first())"/>
+
             <!-- Contenedor para la tabla con scroll horizontal y altura fija -->
             <div class="overflow-auto mt-8 max-w-6xl mx-auto h-[550px]">
                 <table class="min-w-full divide-y divide-black border border-gray-300 overflow-y-auto">
@@ -62,8 +54,9 @@
                                     </div>
                                 </div>
                             </td>
-                            @foreach($data as $value)
-                                <td class="px-6 py-4 {{ $table_name === 'users' ? 'text-sm' : 'text-md' }} text-black">
+                            @foreach($data as $key => $value)
+                                <td data-field="{{ $key }}"
+                                    class="px-6 py-4 text-md text-black max-w-[100ch] truncate">
                                     {{ $value }}
                                 </td>
                             @endforeach
@@ -71,6 +64,13 @@
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+            <!-- Botón para crear -->
+            <div class="mb-4 mt-8  pr-36 text-center">
+                <a href="{{ url('/') }}"
+                   class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
+                    Crear
+                </a>
             </div>
             <!-- Enlaces de paginación -->
             <div class="flex items-center justify-between mt-6">
