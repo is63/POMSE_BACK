@@ -1,17 +1,15 @@
 @extends('components.layout')
 
 @section('main')
+    @props(['usuarios'])
     <div class="max-w-4xl mx-auto mt-8">
-        <h1 class="text-2xl font-bold text-center mb-6">Editar Post</h1>
-        <form method="POST" action="{{ url('/posts/' . $post->id) }}" enctype="multipart/form-data"
+        <h1 class="text-2xl font-bold text-center mb-6">Crear Nuevo Registro</h1>
+        <form method="POST" action="{{ url('/posts') }}" enctype="multipart/form-data"
               class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             @csrf
-            @method('PUT')
-
             <div class="mb-4">
                 <label for="titulo" class="block text-gray-700 font-bold mb-2">Título:</label>
-                <input type="text" name="titulo" id="titulo" placeholder="Título"
-                       value="{{ old('titulo', $post->titulo) }}"
+                <input type="text" name="titulo" id="titulo" placeholder="Título" value="{{ old('titulo') }}"
                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
                        required>
                 @error('titulo')
@@ -22,7 +20,8 @@
             <div class="mb-4">
                 <label for="descripcion" class="block text-gray-700 font-bold mb-2">Descripción:</label>
                 <textarea name="descripcion" id="descripcion" placeholder="Descripción"
-                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">{{ old('descripcion', $post->descripcion) }}</textarea>
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                          >{{ old('descripcion') }}</textarea>
                 @error('descripcion')
                 <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                 @enderror
@@ -38,11 +37,6 @@
                         Seleccionar Archivo
                     </button>
                 </div>
-                @if($post->imagen)
-                    <p class="mt-2 text-sm text-gray-600">Imagen actual: <a href="{{ asset($post->imagen) }}"
-                                                                            target="_blank"
-                                                                            class="text-blue-500 underline">Ver Imagen</a></p>
-                @endif
                 @error('imagen')
                 <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                 @enderror
@@ -51,7 +45,6 @@
             <div class="mb-4">
                 <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario:</label>
                 <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario"
-                       value="{{ old('usuario_id', $post->usuario_id) }}"
                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
                 <datalist id="usuarios">
                     @foreach($usuarios as $usuario)
@@ -66,7 +59,7 @@
             <div class="flex items-center justify-between">
                 <button type="submit"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Guardar Cambios
+                    Crear
                 </button>
                 <a href="{{ url('/posts') }}"
                    class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">

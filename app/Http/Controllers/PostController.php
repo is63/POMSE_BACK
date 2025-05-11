@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Post;
 
 class PostController
 {
@@ -12,5 +13,73 @@ class PostController
         $table_name = 'posts';
         $table_data = DB::table($table_name)->paginate(10);
         return view($table_name . '.index', compact('table_name', 'table_data'));
+    }
+
+    public function create()
+    {
+        $usuarios = DB::table('users')->get();
+        return view('posts.create', compact('usuarios'));
+    }
+
+    public function store()
+    {
+        $table_name = 'posts';
+        $data = request()->validate([
+            'titulo' => 'required|string|max:255',
+            'imagen' => 'file|nullable',
+            'descripcion' => 'string|nullable',
+            'usuario_id' => 'required|integer|exists:users,id',
+        ]);
+
+        if (request()->hasFile('imagen')) {
+            $data['imagen'] = request()->file('imagen')->store('imagenes', 'public');
+            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+        }
+
+        $data['updated_at'] = now();
+        $data['created_at'] = now();
+
+        //dd($data);
+        DB::table($table_name)->insert($data);
+        return redirect()->route('posts.index')->with('success', 'Post creado exitosamente.');
+    }
+
+    public function edit($id)
+    {
+        $post = DB::table('posts')->where('id', $id)->first();
+        $usuarios = DB::table('users')->get();
+        return view('posts.edit', compact('post', 'usuarios'));
+    }
+
+    public function update($id)
+    {
+        $table_name = 'posts';
+        $data = request()->validate([
+            'titulo' => 'required|string|max:255',
+            'imagen' => 'file|nullable',
+            'descripcion' => 'string|nullable',
+            'usuario_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $post = Post::findOrFail($id);
+        if (request()->hasFile('imagen')) {
+            $data['imagen'] = request()->file('imagen')->store('imagenes', 'public');
+            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+        }
+
+        $data['updated_at'] = now();
+
+        //dd($data);
+
+        $post->update($data);
+
+        return redirect()->route('posts.index')->with('success', 'Post actualizado exitosamente.');
+    }
+
+    public function destroy($id)
+    {
+        $post =  Post::findOrFail($id);
+        $post->delete();
+        return redirect()->route('posts.index')->with('success', 'Post eliminado exitosamente.');
     }
 }
