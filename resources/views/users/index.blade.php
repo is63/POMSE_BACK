@@ -138,17 +138,6 @@
         @endif
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verifica si hay un mensaje de éxito
-            const successMessage = document.getElementById('success-message');
-            if (successMessage) {
-                // Después de 3 segundos, ocultar el mensaje
-                setTimeout(function() {
-                    successMessage.style.display = 'none';
-                }, 3000);
-            }
-        });
-    </script>
+    <x-time_mensage/>
 
 @endsection

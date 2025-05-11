@@ -36,7 +36,11 @@ Route::resource('users', UserController::class);
 Route::resource('posts', PostController::class);
 Route::resource('comments', CommentController::class);
 Route::resource('likes', LikeController::class);
-Route::resource('saveds', SavedController::class);
+
+Route::get('saveds', [SavedController::class, 'index'])->name('saveds.index');
+Route::get('saveds/create', [SavedController::class, 'create']);
+Route::post('saveds', [SavedController::class, 'store']);
+Route::delete('saveds/{usuario_id}/{post_id}', [SavedController::class, 'destroy']);
 
 Route::get('friendships', [FriendshipController::class, 'index'])->name('friendships.index');
 Route::get('friendships/create', [FriendshipController::class, 'create']);
