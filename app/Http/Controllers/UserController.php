@@ -22,8 +22,8 @@ class UserController extends Controller
     }
     public function create()
     {
-        $table_name = 'users';
-        return view('users.create', compact('table_name'));
+
+        return view('users.create');
     }
 
     public function store()
@@ -51,8 +51,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $table_name = 'users';
-        return view('users.edit', compact('user', 'table_name'));
+        return view('users.edit', compact('user'));
     }
 
     public function update($id)

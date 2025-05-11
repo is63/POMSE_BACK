@@ -9,8 +9,10 @@ class Friendship extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['usuario_id', 'amigo_id'];
+    protected $fillable = ['usuario_id', 'amigo_id', 'accepted','updated_at'];
 
+    protected $primaryKey = ['usuario_id', 'amigo_id'];
+    public $incrementing = false;
 
     // El usuario que envió la solicitud de amistad.
     public function sender()

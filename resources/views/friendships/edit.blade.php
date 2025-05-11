@@ -1,69 +1,61 @@
-@extends('layouts.adminlte')
+@extends('components.layout')
 
-@section('content')
-<div class="container-fluid">
-    <h1 class="mb-4">Editar Dominio</h1>
+@section('main')
+    @props(['$friendship', '$usuarios'])
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>¡Errores encontrados!</strong>
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <div class="max-w-4xl mx-auto mt-8">
+        <h1 class="text-2xl font-bold text-center mb-6">Editar Amistad</h1>
+        <form method="POST" action="{{ url('friendships/' . $friendship->usuario_id . '/' . $friendship->amigo_id) }}"
+              class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            @csrf
+            @method('PUT')
 
-    <form action="{{ route('users.update', $dominio) }}" method="POST">
-        @csrf
-        @method('PUT')
+            <div class="mb-4">
+                <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario_Id:</label>
+                <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario" disabled
+                       value="{{ $friendship->usuario_id }}"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <datalist id="usuarios">
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
+                    @endforeach
+                </datalist>
+            </div>
 
-        <div class="mb-3">
-            <label for="dominio" class="form-label">Nombre del Dominio</label>
-            <input type="text" name="dominio" class="form-control" value="{{ old('dominio', $dominio->dominio) }}" required>
-        </div>
+            <div class="mb-4">
+                <label for="amigo_id" class="block text-gray-700 font-bold mb-2">Amigo_Id:</label>
+                <input list="usuarios" name="amigo_id" placeholder="Seleccione un usuario" disabled
+                       value="{{ $friendship->amigo_id }}"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <datalist id="usuarios">
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
+                    @endforeach
+                </datalist>
+            </div>
 
-        <div class="mb-3">
-            <label for="cliente_id" class="form-label">Cliente</label>
-            <select name="cliente_id" class="form-select" required>
-                <option value="">Seleccione un cliente</option>
-                @foreach($clientes as $cliente)
-                    <option value="{{ $cliente->id }}" {{ $dominio->cliente_id == $cliente->id ? 'selected' : '' }}>
-                        {{ $cliente->clientes }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+            <div class="mb-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-700 font-bold">¿Solicitud Aceptada?</span>
+                    <input type="checkbox" id="accepted" name="accepted" value="1" class="hidden peer"
+                           @if($friendship->accepted) checked @endif>
+                    <label for="accepted"
+                           class="w-6 h-6 bg-gray-200 border-2 border-gray-300 rounded cursor-pointer peer-checked:bg-green-500 peer-checked:border-green-500 flex items-center justify-center">
+                    </label>
+                </div>
+            </div>
 
-        <div class="mb-3">
-            <label for="plan_id" class="form-label">Plan</label>
-            <select name="plan_id" class="form-select" required>
-                <option value="">Seleccione un plan</option>
-                @foreach($planes as $plan)
-                    <option value="{{ $plan->id }}" {{ $dominio->plan_id == $plan->id ? 'selected' : '' }}>
-                        {{ $plan->nombre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="servidores_id" class="form-label">Servidor</label>
-            <select name="servidor_id" class="form-select" required>
-                <option value="">Seleccione un servidor</option>
-                @foreach($servidores as $servidor)
-                    <option value="{{ $servidor->id }}" {{ old('servidor_id') == $servidor->id ? 'selected' : '' }}>
-                        {{ $servidor->nombre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i> Actualizar
-        </button>
-        <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancelar</a>
-    </form>
-</div>
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Actualizar
+                </button>
+                <a href="{{ url('/friendships') }}"
+                   class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 @endsection
+

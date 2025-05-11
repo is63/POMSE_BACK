@@ -7,11 +7,30 @@
         <!-- Título que muestra el nombre de la tabla -->
         <p class="text-2xl font-bold text-black text-center pb-4 border-b-2 border-b-black">Contenido de la tabla: <span
                 class="uppercase ">{{ $table_name }} </span></p>
+        @if(session('success'))
+            <div id="success-message" class="bg-green-500 text-white p-4 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div id="error-message" class="bg-red-500 text-white p-4 rounded mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <!-- Verifica si la tabla está vacía -->
         @if($table_data->isEmpty())
             <!-- Mensaje que indica que no hay datos en la tabla -->
             <p class="text-center text-gray-500 mt-4">La tabla está vacía.</p>
+            <!-- Botón para crear -->
+            <div class="mb-4 mt-8 ml-32 pr-36 text-center">
+                <form method="get" action="{{ url('/friendships/create') }}">
+                    <button
+                        class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
+                        Crear
+                    </button>
+                </form>
+            </div>
         @else
             <!-- Barra de búsqueda dinámica -->
             <x-search_bar :fields="array_keys((array) $table_data->first())"/>
@@ -44,21 +63,28 @@
                                     <div x-show="open" x-cloak @click.away="open = false"
                                          class="absolute left-0 top-6 w-32 bg-white border border-gray-300 rounded shadow-lg z-10">
                                         <ul class="py-1">
-                                            <li><a href="#"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                            <li><a href="{{ url('/friendships/' . $data->usuario_id . '/' . $data->amigo_id . '/edit') }}"
+                                                   class="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100">Editar</a>
                                             </li>
-                                            <li><a href="#"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Borrar</a>
+                                            <li>
+                                                <form method="POST"  action="{{ url('friendships/' . $data->usuario_id . '/' . $data->amigo_id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            class="block w-[100%] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        Borrar
+                                                    </button>
+                                                </form>
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </td>
-@foreach($data as $key => $value)
-    <td data-field="{{ $key }}" class="px-6 py-4 text-md text-black max-w-[100ch] truncate">
-        {{ $value }}
-    </td>
-@endforeach
+                            @foreach($data as $key => $value)
+                                <td data-field="{{ $key }}" class="px-6 py-4 text-md text-black max-w-[100ch] truncate">
+                                    {{ $value }}
+                                </td>
+                            @endforeach
                         </tr>
                     @endforeach
                     </tbody>
@@ -66,7 +92,7 @@
             </div>
             <!-- Botón para crear -->
             <div class="mb-4 mt-8  pr-36 text-center">
-                <a href="{{ url('/') }}"
+                <a href="{{ url('/friendships/create') }}"
                    class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
                     Crear
                 </a>
@@ -116,5 +142,25 @@
             </div>
         @endif
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verifica si hay un mensaje de éxito
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            if (successMessage) {
+                // Después de 3 segundos, ocultar el mensaje
+                setTimeout(function () {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            }
+            if (errorMessage) {
+                // Después de 10 segundos, ocultar el mensaje
+                setTimeout(function () {
+                    errorMessage.style.display = 'none';
+                }, 10000);
+            }
+        });
+    </script>
 
 @endsection

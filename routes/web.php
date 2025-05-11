@@ -37,7 +37,14 @@ Route::resource('posts', PostController::class);
 Route::resource('comments', CommentController::class);
 Route::resource('likes', LikeController::class);
 Route::resource('saveds', SavedController::class);
-Route::resource('friendships', FriendshipController::class);
+
+Route::get('friendships', [FriendshipController::class, 'index'])->name('friendships.index');
+Route::get('friendships/create', [FriendshipController::class, 'create']);
+Route::post('friendships', [FriendshipController::class, 'store']);
+Route::get('friendships/{usuario_id}/{amigo_id}/edit', [FriendshipController::class, 'edit']);
+Route::put('friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'update']);
+Route::delete('friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'destroy']);
+
 Route::resource('messages', MessageController::class);
 Route::resource('chats', ChatController::class);
 

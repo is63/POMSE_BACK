@@ -13,6 +13,15 @@
         @if($table_data->isEmpty())
             <!-- Mensaje que indica que no hay datos en la tabla -->
             <p class="text-center text-gray-500 mt-4">La tabla está vacía.</p>
+            <!-- Botón para crear -->
+            <div class="mb-4 mt-8 ml-32 pr-36 text-center">
+                <form method="get" action="{{ url('/saveds/create') }}">
+                    <button
+                        class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
+                        Crear
+                    </button>
+                </form>
+            </div>
         @else
             <!-- Barra de búsqueda dinámica -->
             <x-search_bar :fields="array_keys((array) $table_data->first())"/>
