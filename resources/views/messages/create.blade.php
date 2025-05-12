@@ -19,8 +19,8 @@
                         <option value="">Seleccione un chat</option>
                         @foreach($chats as $chat)
                             <option value="{{ $chat->id }}">
-                                {{ Illuminate\Support\Facades\DB::table('users')->where('id','=',$chat->participante_1)->pluck('usuario')[0] }}
-                                - {{ Illuminate\Support\Facades\DB::table('users')->where('id','=',$chat->participante_2)->pluck('usuario')[0] }}
+                                {{ DB::table('users')->where('id','=',$chat->participante_1)->pluck('usuario')[0] }}
+                                - {{ DB::table('users')->where('id','=',$chat->participante_2)->pluck('usuario')[0] }}
                             </option>
                         @endforeach
                     </select>

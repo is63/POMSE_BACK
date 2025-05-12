@@ -3,8 +3,8 @@
 @section('main')
     <div class="max-w-4xl mx-auto mt-8">
         <h1 class="text-2xl font-bold text-center mb-6">Editar Mensaje</h1>
-        <div method="POST" action="{{ route('messages.update', $message->id) }}" enctype="multipart/form-data"
-             class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form method="POST" action="{{ url('/messages', $message->id) }}" enctype="multipart/form-data"
+              class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             @csrf
             @method('PUT')
             <div class="bg-gray-50 px-4 py-3 rounded-t mb-6">
@@ -14,8 +14,8 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
                         @foreach($chats as $chat)
                             <option value="{{ $chat->id }}" {{ $chat->id == $message->chat_id ? 'selected' : '' }}>
-                                {{ Illuminate\Support\Facades\DB::table('users')->where('id','=',$chat->participante_1)->pluck('usuario') }}
-                                - {{ Illuminate\Support\Facades\DB::table('users')->where('id','=',$chat->participante_2)->pluck('usuario') }}
+                                {{ DB::table('users')->where('id','=',$chat->participante_1)->pluck('usuario') }}
+                                - {{ DB::table('users')->where('id','=',$chat->participante_2)->pluck('usuario') }}
                             </option>
                         @endforeach
                     </select>
@@ -61,8 +61,14 @@
 
                 <div class="mb-4">
                     <label for="imagen" class="block text-gray-700 font-bold mb-2">Imagen (opcional):</label>
-                    <input type="file" name="imagen" id="imagen"
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
+                    <div class="flex items-center space-x-4">
+                        <input type="file" name="imagen" id="imagen" class="hidden" onchange="updateButtonText()">
+                        <button type="button" id="uploadButton"
+                                onclick="document.getElementById('imagen').click()"
+                                class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Seleccionar Archivo
+                        </button>
+                    </div>
                     @if($message->imagen)
                         <p class="my-4 text-gray-700 font-bold mb-2">Imagen actual: <img class="my-2"
                                                                                          src="{{ asset($message->imagen) }}"
@@ -80,69 +86,75 @@
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                     Guardar Cambios
                 </button>
-                <a href="{{ url('/posts') }}"
+                <a href="{{ url('/messages') }}"
                    class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                     Cancelar
                 </a>
             </div>
-            </form>
-        </div>
+        </form>
+    </div>
 
-        <script>
-            function updateSelectedName(inputId, datalistId, displayId) {
-                const input = document.getElementById(inputId);
-                const datalist = document.getElementById(datalistId);
-                const display = document.getElementById(displayId);
+    <script>
+        function updateSelectedName(inputId, datalistId, displayId) {
+            const input = document.getElementById(inputId);
+            const datalist = document.getElementById(datalistId);
+            const display = document.getElementById(displayId);
 
-                const selectedOption = Array.from(datalist.options).find(option => option.value === input.value);
-                display.textContent = selectedOption ? `Seleccionado: ${selectedOption.textContent}` : '';
+            const selectedOption = Array.from(datalist.options).find(option => option.value === input.value);
+            display.textContent = selectedOption ? `Seleccionado: ${selectedOption.textContent}` : '';
+        }
+
+        document.getElementById('emisor_id').addEventListener('input', function () {
+            updateSelectedName('emisor_id', 'emisores', 'emisor_name');
+        });
+
+        document.getElementById('receptor_id').addEventListener('input', function () {
+            updateSelectedName('receptor_id', 'receptores', 'receptor_name');
+        });
+
+        document.getElementById('chat_id').addEventListener('change', function () {
+            let chatId = this.value;
+            if (chatId) {
+                fetch(`/chats/${chatId}/participants`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let emisorDatalist = document.getElementById('emisores');
+                        let receptorDatalist = document.getElementById('receptores');
+
+                        // Limpiar las opciones previas
+                        emisorDatalist.innerHTML = '';
+                        receptorDatalist.innerHTML = '';
+
+                        // Llenar las opciones con los participantes
+                        data.participants.forEach(user => {
+                            let emisorOption = document.createElement('option');
+                            emisorOption.value = user.id;
+                            emisorOption.textContent = user.usuario;
+                            emisorDatalist.appendChild(emisorOption);
+
+                            let receptorOption = document.createElement('option');
+                            receptorOption.value = user.id;
+                            receptorOption.textContent = user.usuario;
+                            receptorDatalist.appendChild(receptorOption);
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
             }
+        });
 
-            document.getElementById('emisor_id').addEventListener('input', function () {
-                updateSelectedName('emisor_id', 'emisores', 'emisor_name');
-            });
+        // Cargar los participantes del chat seleccionado al cargar la página
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatId = document.getElementById('chat_id').value;
+            if (chatId) {
+                document.getElementById('chat_id').dispatchEvent(new Event('change'));
+            }
+        });
 
-            document.getElementById('receptor_id').addEventListener('input', function () {
-                updateSelectedName('receptor_id', 'receptores', 'receptor_name');
-            });
-
-            document.getElementById('chat_id').addEventListener('change', function () {
-                let chatId = this.value;
-                if (chatId) {
-                    fetch(`/chats/${chatId}/participants`)
-                        .then(response => response.json())
-                        .then(data => {
-                            let emisorDatalist = document.getElementById('emisores');
-                            let receptorDatalist = document.getElementById('receptores');
-
-                            // Limpiar las opciones previas
-                            emisorDatalist.innerHTML = '';
-                            receptorDatalist.innerHTML = '';
-
-                            // Llenar las opciones con los participantes
-                            data.participants.forEach(user => {
-                                let emisorOption = document.createElement('option');
-                                emisorOption.value = user.id;
-                                emisorOption.textContent = user.usuario;
-                                emisorDatalist.appendChild(emisorOption);
-
-                                let receptorOption = document.createElement('option');
-                                receptorOption.value = user.id;
-                                receptorOption.textContent = user.usuario;
-                                receptorDatalist.appendChild(receptorOption);
-                            });
-                        })
-                        .catch(error => console.error('Error:', error));
-                }
-            });
-
-            // Cargar los participantes del chat seleccionado al cargar la página
-            document.addEventListener('DOMContentLoaded', function () {
-                const chatId = document.getElementById('chat_id').value;
-                if (chatId) {
-                    document.getElementById('chat_id').dispatchEvent(new Event('change'));
-                }
-            });
-        </script>
+        function updateButtonText() {
+            const fileInput = document.getElementById('imagen');
+            const uploadButton = document.getElementById('uploadButton');
+            uploadButton.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'Seleccionar Archivo';
+        }
+    </script>
 
 @endsection

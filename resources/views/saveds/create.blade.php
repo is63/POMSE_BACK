@@ -12,25 +12,43 @@
             @csrf
             <div class="bg-gray-50 px-4 py-3 rounded-t mb-6">
                 <div class="mb-4">
-                    <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario:</label>
-                    <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario"
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <datalist id="usuarios">
+                    <label for="search_usuario" class="block text-gray-700 font-bold mb-2">Buscar Usuario:</label>
+                    <input type="text" id="search_usuario" placeholder="Ingrese el nombre del usuario"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           oninput="filterOptions('search_usuario', 'usuario_select')">
+
+                    <label for="usuario_select" class="block text-gray-700 font-bold mb-2 mt-4">Usuario:</label>
+                    <select name="usuario_id" id="usuario_select"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                        <option value="">Seleccione un usuario</option>
                         @foreach($usuarios as $usuario)
                             <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
                         @endforeach
-                    </datalist>
+                    </select>
+                    @error('usuario_id')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label for="post_id" class="block text-gray-700 font-bold mb-2">Post:</label>
-                    <input list="posts" name="post_id" placeholder="Seleccione un post"
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <datalist id="posts">
+                    <label for="search_post" class="block text-gray-700 font-bold mb-2">Buscar Post:</label>
+                    <input type="text" id="search_post" placeholder="Ingrese el título del post"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           oninput="filterOptions('search_post', 'post_select')">
+
+                    <label for="post_select" class="block text-gray-700 font-bold mb-2 mt-4">Post:</label>
+                    <select name="post_id" id="post_select"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                        <option value="">Seleccione un post</option>
                         @foreach($posts as $post)
                             <option value="{{ $post->id }}">{{ $post->titulo }}</option>
                         @endforeach
-                    </datalist>
+                    </select>
+                    @error('post_id')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
             <div class="flex items-center justify-between">

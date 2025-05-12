@@ -63,7 +63,7 @@
                                          class="absolute left-0 top-6 w-32 bg-white border border-gray-300 rounded shadow-lg z-10">
                                         <ul class="py-1">
                                             <li><a href="/messages/{{ $data->id }}/edit"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                                   class="block px-4 py-2 text-sm text-center text-gray-700 hover:bg-gray-100">Editar</a>
                                             </li>
                                             <li>
                                                 <form method="POST" action="/messages/{{ $data->id }}">

@@ -48,15 +48,23 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="usuario_id" class="block text-gray-700 font-bold mb-2">Usuario:</label>
-                    <input list="usuarios" name="usuario_id" placeholder="Seleccione un usuario"
-                           value="{{ old('usuario_id', $post->usuario_id) }}"
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline">
-                    <datalist id="usuarios">
+                    <label for="search_usuario" class="block text-gray-700 font-bold mb-2">Buscar Usuario:</label>
+                    <input type="text" id="search_usuario" placeholder="Ingrese el nombre del usuario"
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           oninput="filterOptions('search_usuario', 'usuario_select')">
+
+                    <label for="usuario_select" class="block text-gray-700 font-bold mb-2 mt-4">Usuario:</label>
+                    <select name="usuario_id" id="usuario_select"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                        <option value="">Seleccione un usuario</option>
                         @foreach($usuarios as $usuario)
-                            <option value="{{ $usuario->id }}">{{ $usuario->usuario }}</option>
+                            <option
+                                value="{{ $usuario->id }}" {{ $usuario->id == old('usuario_id', $post->usuario_id) ? 'selected' : '' }}>
+                                {{ $usuario->usuario }}
+                            </option>
                         @endforeach
-                    </datalist>
+                    </select>
                     @error('usuario_id')
                     <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                     @enderror
@@ -82,4 +90,5 @@
             uploadButton.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'Seleccionar Archivo';
         }
     </script>
+    <x-search_script/>
 @endsection

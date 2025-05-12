@@ -23,8 +23,8 @@ class UserController extends Controller
 
     public function create()
     {
-
-        return view('users.create');
+        $usuarios = DB::table('users')->get();
+        return view('users.create', compact('usuarios'));
     }
 
     public function store()
@@ -52,7 +52,9 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $usuarios = DB::table('users')->get();
+
+        return view('users.edit', compact('user', 'usuarios'));
     }
 
     public function update($id)

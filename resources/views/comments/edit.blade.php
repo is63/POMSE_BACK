@@ -74,7 +74,7 @@
                                 class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                             Seleccionar Archivo
                         </button>
-                        @if($comment->imagen)/home/ismael/Documents/2ºDAW/Proyecto_Final/Proyecto/POMSE_BACK/resources/views/chats
+                        @if($comment->imagen)
                             <button type="button" id="deleteImageButton"
                                     onclick="deleteImage()"
                                     class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">

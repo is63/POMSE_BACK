@@ -84,7 +84,7 @@ class MessageController
         return view('messages.edit', compact('message', 'usuarios', 'chats'));
     }
 
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
         try {
             $data = $request->validate([

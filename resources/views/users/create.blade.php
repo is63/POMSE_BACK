@@ -81,7 +81,7 @@
                 @error('is_admin')
                 <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                 @enderror
-            </div>
+
             <div class="mb-8">
                 <div class="flex items-center space-x-2">
                     <span class="text-gray-700 font-bold">¿Es Verificado?</span>
@@ -94,7 +94,7 @@
             @error('verificado')
             <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
         @enderror
-    </div>
+            </div>
             <div class="flex items-center justify-between">
                 <button type="submit"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
