@@ -35,7 +35,11 @@ Route::middleware('auth')->group(function () {
 Route::resource('users', UserController::class);
 Route::resource('posts', PostController::class);
 Route::resource('comments', CommentController::class);
-Route::resource('likes', LikeController::class);
+
+Route::get('likes', [LikeController::class, 'index'])->name('likes.index');
+Route::get('likes/create', [LikeController::class, 'create']);
+Route::post('likes', [LikeController::class, 'store']);
+Route::delete('likes/{usuario_id}/{post_id}', [LikeController::class, 'destroy']);
 
 Route::get('saveds', [SavedController::class, 'index'])->name('saveds.index');
 Route::get('saveds/create', [SavedController::class, 'create']);

@@ -112,7 +112,7 @@ class MessageController
             if ($request->hasFile('imagen')) {
                 $data['imagen'] = 'storage/' . $request->file('imagen')->store('imagenes', 'public');
             } else {
-                $data['imagen'] = $message->imagen; // Mantener la imagen existente si no se sube una nueva
+                $data['imagen'] = $message->imagen;
             }
 
             $data['updated_at'] = now();
