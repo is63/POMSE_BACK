@@ -78,8 +78,78 @@ class PostController
 
     public function destroy($id)
     {
-        $post =  Post::findOrFail($id);
+        $post = Post::findOrFail($id);
         $post->delete();
         return redirect()->route('posts.index')->with('success', 'Post eliminado exitosamente.');
+    }
+
+    public function allPosts()
+    {
+        try {
+            $posts = Post::all();
+            return response()->json($posts, 200);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function viewPost($id)
+    {
+        $post = DB::table('posts')->where('id', $id)->first();
+        return response()->json($post, 200);
+    }
+
+    public function createPost()
+    {
+        $data = request()->validate([
+            'titulo' => 'required|string|max:255',
+            'imagen' => 'file|nullable',
+            'descripcion' => 'string|nullable',
+            'usuario_id' => 'required|integer|exists:users,id',
+        ]);
+        if (request()->hasFile('imagen')) {
+            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+        }
+
+        $data['updated_at'] = now();
+        $data['created_at'] = now();
+
+        DB::table('posts')->insert($data);
+
+        return response()->json(['message' => 'Post creado exitosamente.'], 201);
+    }
+
+    public function editPost($id)
+    {
+        $data = request()->validate([
+            'titulo' => 'required|string|max:255',
+            'imagen' => 'file|nullable',
+            'descripcion' => 'string|nullable',
+            'usuario_id' => 'required|integer|exists:users,id',
+        ]);
+
+        $post = Post::findOrFail($id);
+        if (request()->hasFile('imagen')) {
+            $data['imagen'] = request()->file('imagen')->store('imagenes', 'public');
+            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+        }
+
+        $data['updated_at'] = now();
+
+        //dd($data);
+
+        $post->update($data);
+
+        return response()->json(['message' => 'Post actualizado exitosamente.'], 200);
+
+    }
+
+    public function deletePost($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return response()->json(['message' => 'Post eliminado exitosamente.'], 200);
     }
 }

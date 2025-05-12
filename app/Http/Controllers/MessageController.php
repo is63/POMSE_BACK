@@ -135,4 +135,47 @@ class MessageController
         $message->delete();
         return redirect()->route('messages.index')->with('success', 'Mensaje eliminado exitosamente.');
     }
+    public function allMessages($chat_id)
+    {
+        try {
+            $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
+            return response()->json($messages);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los mensajes: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function createMessage()
+    {
+        try {
+            $data = request()->validate([
+                'emisor_id' => 'required|exists:users,id',
+                'receptor_id' => 'required|exists:users,id',
+                'chat_id' => 'required|exists:chats,id',
+                'texto' => 'required|string|max:500',
+                'imagen' => 'nullable|image',
+            ]);
+            $data['created_at'] = now();
+            $data['updated_at'] = now();
+
+            DB::table('messages')->insert($data);
+            return response()->json(['mensaje' => 'Mensaje guardado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al guardar el mensaje: ' . $e->getMessage()], 500);
+        }
+    }
+    public function deleteMessage($id)
+    {
+        try {
+            $message = Message::findOrFail($id);
+            if ($message->imagen) {
+                // Eliminar la imagen del almacenamiento
+                \Storage::disk('public')->delete($message->imagen);
+            }
+            $message->delete();
+            return response()->json(['mensaje' => 'Mensaje eliminado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar el mensaje: ' . $e->getMessage()], 500);
+        }
+    }
 }

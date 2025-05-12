@@ -100,4 +100,59 @@ class ChatController
         Db::table('chats')->where('id', $id)->delete();
         return redirect()->route('chats.index')->with('success', 'Chat eliminado exitosamente.');
     }
+
+    public function allChats($participante)
+    {
+        try {
+            $chats = DB::table('chats')->where('participante_1', $participante)
+                ->orWhere('participante_2', $participante)
+                ->get();
+            return response()->json($chats);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los chats: ' . $e->getMessage()], 500);
+        }
+    }
+    public function createChat()
+    {
+        try {
+            $data = request()->validate([
+                'participante_1' => 'required|exists:users,id',
+                'participante_2' => 'required|exists:users,id',
+            ]);
+            // Verificar si los participantes son el mismo usuario
+            if ($data['participante_1'] === $data['participante_2']) {
+                return response()->json(['error' => 'Los participantes no pueden ser el mismo usuario'], 400);
+            }
+            // Verificar si el chat ya existe
+            $existingChat = DB::table('chats')
+                ->where(function ($query) use ($data) {
+                    $query->where('participante_1', $data['participante_1'])
+                        ->where('participante_2', $data['participante_2']);
+                })
+                ->orWhere(function ($query) use ($data) {
+                    $query->where('participante_1', $data['participante_2'])
+                        ->where('participante_2', $data['participante_1']);
+                })
+                ->first();
+            if ($existingChat) {
+                return response()->json(['error' => 'El chat ya existe entre estos dos usuarios'], 400);
+            }
+            $data['updated_at'] = now();
+            $data['created_at'] = now();
+
+            DB::table('chats')->insert($data);
+            return response()->json(['mensaje' => 'Chat creado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al crear el chat: ' . $e->getMessage()], 500);
+        }
+    }
+    public function deleteChat($id)
+    {
+        try {
+            DB::table('chats')->where('id', $id)->delete();
+            return response()->json(['mensaje' => 'Chat eliminado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar el chat: ' . $e->getMessage()], 500);
+        }
+    }
 }

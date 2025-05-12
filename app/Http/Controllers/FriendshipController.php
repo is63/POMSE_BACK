@@ -110,5 +110,92 @@ class FriendshipController
         }
     }
 
+    public function allFriendships()
+    {
+        $friendships = DB::table('friendships')->get();
+        return response()->json($friendships, 200);
+    }
 
+    public function viewFriendship($usuario_id, $amigo_id)
+    {
+        $friendship = DB::table('friendships')
+            ->where('usuario_id', $usuario_id)
+            ->where('amigo_id', $amigo_id)
+            ->first();
+
+        if (!$friendship) {
+            return response()->json(['error' => 'Amistad no encontrada.'], 404);
+        }
+
+        return response()->json($friendship, 200);;
+    }
+
+    public function createFriendship()
+    {
+        {
+            try {
+
+                $data = request()->validate([
+                    'usuario_id' => 'required|integer|exists:users,id',
+                    'amigo_id' => 'required|integer|exists:users,id',
+                    'accepted' => 'boolean|nullable',
+                ]);
+
+                $data['accepted'] = isset($data['accepted']) ? 1 : 0;
+                $data['updated_at'] = now();
+                $data['created_at'] = now();
+
+                //dd($data);
+
+                DB::table('friendships')->insert($data);
+                return response()->json(['message' => 'Amistad creada exitosamente.'], 201);;
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al crear la amistad: ' . $e->getMessage()], 500);
+            }
+        }
+    }
+
+    public function editFriendship($usuario_id, $amigo_id)
+    {
+        try {
+            $data = request()->validate([
+                'accepted' => 'nullable|boolean',
+            ]);
+
+            $friendship = DB::table('friendships')
+                ->where('usuario_id', $usuario_id)
+                ->where('amigo_id', $amigo_id)
+                ->first();
+
+            if (!$friendship) {
+                return response()->json(['error' => 'Amistad no encontrada.'], 404);
+            }
+
+            $data['accepted'] = isset($data['accepted']) ? 1 : 0;
+
+            DB::table('friendships')
+                ->where('usuario_id', $usuario_id)
+                ->where('amigo_id', $amigo_id)
+                ->update($data);
+
+            return response()->json(['success' => 'Amistad actualizada exitosamente.'], 200);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar la amistad: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteFriendship($usuario_id, $amigo_id)
+    {
+        $deleted = DB::table('friendships')
+            ->where('usuario_id', $usuario_id)
+            ->where('amigo_id', $amigo_id)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => 'Amistad eliminada exitosamente.'], 200);
+        } else {
+            return response()->json(['error' => 'Error al eliminar la amistad.'], 500);
+        }
+    }
 }

@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('likes', function (Blueprint $table) {
-            $table->foreignId('usuario_id')->constrained('users');
-            $table->foreignId('post_id')->constrained('posts');
+            $table->foreignId('usuario_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
             $table->timestamp('saved_at')->useCurrent();
 
             $table->primary(['usuario_id', 'post_id']);

@@ -40,4 +40,40 @@ class LikeController
         DB::table('likes')->where('usuario_id', $usuario_id)->where('post_id', $post_id)->delete();
         return redirect()->route('likes.index')->with('success', 'Like eliminado exitosamente.');
     }
+
+    public function allLikes($usuario_id)
+    {
+        try {
+            $likes = DB::table('likes')->where('usuario_id', $usuario_id)->get();
+            return response()->json($likes);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los likes: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function createLike()
+    {
+        try {
+            $data = request()->validate([
+                'usuario_id' => 'required|exists:users,id',
+                'post_id' => 'required|exists:posts,id',
+            ]);
+            $data['saved_at'] = now();
+
+            DB::table('likes')->insert($data);
+            return response()->json(['mensaje' => 'Like guardado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al guardar el like: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteLike($usuario_id, $post_id)
+    {
+        try {
+            DB::table('likes')->where('usuario_id', $usuario_id)->where('post_id', $post_id)->delete();
+            return response()->json(['mensaje' => 'Like eliminado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar el like: ' . $e->getMessage()], 500);
+        }
+    }
 }
