@@ -7,7 +7,16 @@
         <!-- Título que muestra el nombre de la tabla -->
         <p class="text-2xl font-bold text-black text-center pb-4 border-b-2 border-b-black">Contenido de la tabla: <span
                 class="uppercase ">{{ $table_name }} </span></p>
-
+        @if(session('success'))
+            <div id="success-message" class="bg-green-500 text-white p-4 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div id="error-message" class="bg-red-500 text-white p-4 rounded mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
         <!-- Verifica si la tabla está vacía -->
         @if($table_data->isEmpty())
             <!-- Mensaje que indica que no hay datos en la tabla -->
@@ -53,11 +62,19 @@
                                     <div x-show="open" x-cloak @click.away="open = false"
                                          class="absolute left-0 top-6 w-32 bg-white border border-gray-300 rounded shadow-lg z-10">
                                         <ul class="py-1">
-                                            <li><a href="#"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                            <li><a href="{{ url('chats/' . $data->id) .'/edit' }}"
+                                                   class="block px-4 py-2 text-sm text-gray-700 text-center hover:bg-gray-100">Editar</a>
                                             </li>
-                                            <li><a href="#"
-                                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Borrar</a>
+                                            <li>
+                                                <form method="POST"
+                                                      action="{{ url('chats/' . $data->id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            class="block w-[100%] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
                                             </li>
                                         </ul>
                                     </div>
