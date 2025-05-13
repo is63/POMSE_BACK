@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        //$middleware->register('Prueba', \App\Http\Middleware\Prueba::class);
+        $middleware->alias([
+            'Prueba' => \App\Http\Middleware\Prueba::class,
+        ]);
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {

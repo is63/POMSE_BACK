@@ -15,19 +15,7 @@ use App\Http\Controllers\SavedController;
 
 // Si no se esta Autorizado no se puede acceder
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        $databaseName = DB::getDatabaseName();
-        $tables = DB::table('information_schema.tables')
-            ->select('table_name')
-            ->where('table_schema', $databaseName)
-            ->get();
-
-        // Borrar las tablas que se crean por defecto para que no aparezcan en la vista
-        $tables = array_slice($tables->toArray(), 2);
-        array_splice($tables, 5, 2);
-
-        return view('welcome', compact('tables'));
-    });
+    Route::get('/', function () {return view('welcome');});
 
     Route::resource('users', UserController::class);
     Route::resource('posts', PostController::class);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -16,9 +17,8 @@ class UserController extends Controller
     //index', 'show', 'edit', 'update', 'destroy
     public function index()
     {
-        $table_name = 'users';
-        $table_data = DB::table($table_name)->paginate(10);
-        return view('users.index', compact('table_name', 'table_data'));
+        $table_data = DB::table('users')->paginate(10);
+        return view('users.index', compact('table_data'));
     }
 
     public function create()
@@ -101,7 +101,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 
-    //Funciones para la API
+    //-----------Funciones para la API
     public function allUsers()
     {
         $usuarios = User::all();

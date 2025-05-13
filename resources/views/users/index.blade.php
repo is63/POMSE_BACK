@@ -1,12 +1,11 @@
 @extends('components.layout')
 @section('main')
-    @props(['$table_name', '$table_data'])
+    @props(['$table_data'])
 
     <!-- Contenedor principal con estilo de fondo, bordes redondeados y sombra -->
     <div class="bg-gray-100 rounded-lg shadow-md p-6">
         <!-- Título que muestra el nombre de la tabla -->
-        <p class="text-2xl font-bold text-black text-center pb-4 border-b-2 border-b-black">Contenido de la tabla: <span
-                class="uppercase ">{{ $table_name }} </span></p>
+        <p class="text-2xl font-bold text-black text-center pb-4 border-b-2 border-b-black">Contenido de la tabla: USERS</p>
         @if(session('success'))
             <div id="success-message" class="bg-green-500 text-white p-4 rounded mb-4">
                 {{ session('success') }}

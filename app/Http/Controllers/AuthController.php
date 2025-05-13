@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -19,8 +20,6 @@ class AuthController extends Controller
     public function store()
     {
         try {
-
-
             // validar los datos
             request()->validate([
                 'name' => ['required'],
@@ -28,14 +27,12 @@ class AuthController extends Controller
                 'password' => ['required', 'confirmed']
             ]);
 
-            $user = User::create([
+            User::create([
                 'usuario' => request('name'),
                 'email' => request('email'),
                 'password' => Hash::make(request('password')),
             ]);
 
-            //login
-            Auth::login($user);
             //redirect
             return redirect('/');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -57,6 +54,15 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required']
         ]);
+
+        $user = DB::table('users')->where('email', $attibutes['email'])->first();
+        //verificar si el usuario es admin
+        if(!$user->is_admin){
+            throw ValidationException::withMessages([
+                'email' => 'El usuario no tiene permisos para acceder a esta pagina'
+            ]);
+        }
+
         //intentar logear
         if (!Auth::attempt($attibutes)) {
             throw ValidationException::withMessages([
@@ -64,18 +70,18 @@ class AuthController extends Controller
             ]);
         }
 
-    //regenerar la sesion
-request()->session()->regenerate();
-    //redireccionar
-return redirect('/')->with('success', 'Bienvenido de nuevo');
-}
+        //regenerar la sesion
+        request()->session()->regenerate();
+        //redireccionar
+        return redirect('/')->with('success', 'Bienvenido de nuevo');
+    }
 
 //Metodos de Logout
-public
-function destroy()
-{
-    Auth::logout();
+    public
+    function destroy()
+    {
+        Auth::logout();
 
-    return redirect('/login');
-}
+        return redirect('/login');
+    }
 }

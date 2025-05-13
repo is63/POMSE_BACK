@@ -13,6 +13,8 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SavedController;
+use App\Http\Controllers\ApiAuthController;
+use App\Http\Controllers\ApiController;
 
 //Usuarios
 Route::get('/users', [UserController::class, 'allUsers']);
@@ -63,6 +65,21 @@ Route::get('/messages/{chat_id}', [MessageController::class, 'allMessages']);
 Route::post('/messages', [MessageController::class, 'createMessage']);
 Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 
+// Login API debe estar fuera del grupo con auth:api
+Route::post('/apiLogin', [ApiAuthController::class, 'login']);
+Route::post('/apiRegister', [ApiAuthController::class, 'register']);
+Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('auth:api');
 
+// Ejemplo de endpoint público
+Route::get('/public-data', [ApiController::class, 'publicData']);
 
+// Ejemplo de endpoint protegido
+Route::middleware('auth:api')->group(function () {
+    Route::get('/private-data', [ApiController::class, 'privateData']);
+    // Aquí puedes agregar más rutas protegidas
+});
 
+// Si tienes rutas que requieren auth:api, ponlas aquí:
+// Route::middleware(['auth:api','is_admin'])->group(function () {
+//     // rutas protegidas
+// });

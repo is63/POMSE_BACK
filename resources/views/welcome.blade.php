@@ -1,1 +1,1 @@
-<x-layout :tables="$tables" :home="False"/>
+<x-layout :home="False"/>
