@@ -17,8 +17,7 @@ class UserController extends Controller
     //index', 'show', 'edit', 'update', 'destroy
     public function index()
     {
-        $table_data = DB::table('users')->paginate(10);
-        return view('users.index', compact('table_data'));
+        return view('users.index');
     }
 
     public function create()
@@ -101,7 +100,11 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 
-    //-----------Funciones para la API
+
+
+    //-----------Funciones para la API ------------------------//
+
+    
     public function allUsers()
     {
         $usuarios = User::all();

@@ -16,12 +16,6 @@ use App\Http\Controllers\SavedController;
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
 
-//Usuarios
-Route::get('/users', [UserController::class, 'allUsers']);
-Route::get('/users/{id}', [UserController::class, 'viewUser']);
-Route::post('/users', [UserController::class, 'createUser']);
-Route::put('/users/{id}', [UserController::class, 'editUser']);
-Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
 //Posts
 Route::get('/posts', [PostController::class, 'allPosts']);
@@ -76,10 +70,27 @@ Route::get('/public-data', [ApiController::class, 'publicData']);
 // Ejemplo de endpoint protegido
 Route::middleware('auth:api')->group(function () {
     Route::get('/private-data', [ApiController::class, 'privateData']);
+
+    //Usuarios
+
+    Route::get('/users/{id}', [UserController::class, 'viewUser']);
+    Route::post('/users', [UserController::class, 'createUser']);
+    Route::put('/users/{id}', [UserController::class, 'editUser']);
+    Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+
     // Aquí puedes agregar más rutas protegidas
 });
 
-// Si tienes rutas que requieren auth:api, ponlas aquí:
-// Route::middleware(['auth:api','is_admin'])->group(function () {
-//     // rutas protegidas
-// });
+//Rutas protegidas para el propietario de la cuenta
+Route::middleware('auth:api','is_owner')->group(function () {
+    // Aquí puedes agregar más rutas protegidas
+});
+
+//Rutas protegidas para el administrador
+Route::middleware(['auth:api', 'is_admin'])->group(function () {
+        
+    //Usuarios 
+    Route::get('/users', [UserController::class, 'allUsers']);
+
+    
+});
