@@ -119,7 +119,7 @@ class CommentController
     {
         $data = request()->validate([
             'texto' => 'required|string|max:500',
-            'usuario_id' => 'required|exists:users,id',
+            //'usuario_id' => 'required|exists:users,id',
             'post_id' => 'required|exists:posts,id',
             'imagen' => 'nullable|image',
         ]);
@@ -128,6 +128,7 @@ class CommentController
             $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
         }
 
+        $data['usuario_id'] = auth()->id(); // Asignar el ID del usuario autenticado
         $data['updated_at'] = now();
         $data['created_at'] = now();
 
@@ -140,8 +141,6 @@ class CommentController
     {
         $data = request()->validate([
             'texto' => 'required|string|max:500',
-            'usuario_id' => 'required|exists:users,id',
-            'post_id' => 'required|exists:posts,id',
             'imagen' => 'nullable|image',
         ]);
 

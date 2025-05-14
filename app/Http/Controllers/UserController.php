@@ -6,13 +6,12 @@ use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     //index', 'show', 'edit', 'update', 'destroy
     public function index()
@@ -90,7 +89,6 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
-
     }
 
     public function destroy($id)
@@ -104,7 +102,7 @@ class UserController extends Controller
 
     //-----------Funciones para la API ------------------------//
 
-    
+
     public function allUsers()
     {
         $usuarios = User::all();
@@ -132,28 +130,42 @@ class UserController extends Controller
         $data['updated_at'] = now();
         $data['created_at'] = now();
 
-        $usuario = DB::table('users')->insert($data);
+        DB::table('users')->insert($data);
         return response()->json(['mensaje' => 'El usuario se ha creado correctamente'], 201); // Return the user in JSON with 201 status
     }
 
-    public function editUser($id)
+    public function editUser(Request $request, $id)
     {
-        $usuario = User::findOrFail(request()->id);
+        try {
 
-        $data = request()->validate([
-            'usuario' => 'required|string|max:16',
-            'email' => 'required|email',
-            'password' => 'nullable|min:6',
-            'is_admin' => 'boolean|nullable',
-            'verificado' => 'boolean|nullable',
-        ]);
+            $validated = $request->validate([
+                'usuario' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:users,email,' . $id,
+                'password' => 'nullable|string|min:8',
+                'bio' => 'nullable|string',
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            ]);
 
-        $data['is_admin'] = isset($data['is_admin']) ? 1 : 0;
-        $data['verificado'] = isset($data['verificado']) ? 1 : 0;
-        $data['updated_at'] = now();
-        $data['password'] = bcrypt($data['password']);
+            // Buscamos el usuario por su ID
+            $user = User::findOrFail($id);
 
-        return response()->json(['mensaje' => 'Usuario editado con exito'], 200); // Return the user in JSON with 200 status
+
+
+            // Si la contraseña está presente, la actualizamos, si no, la dejamos igual
+            if ($request->has('password')) {
+                $user->password = Hash::make($validated['password']);
+            }
+
+            $validated['bio'] = $validated['bio'] ?? $user->bio; // Si bio es null, mantenemos el valor actual
+            $validated['foto'] = $validated['foto'] ?? $user->foto; // Si foto es null, mantenemos el valor actual
+
+            $user->update($validated);
+            return response()->json(['mensaje' => 'Usuario editado con exito'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => 'Error al editar el usuario: ' . $e->getMessage()], 500);
+        }
     }
 
     public function deleteUser($id)
@@ -168,5 +180,4 @@ class UserController extends Controller
             return response()->json(['message' => 'Error al eliminar el usuario: ' . $e->getMessage()], 500);
         }
     }
-
 }

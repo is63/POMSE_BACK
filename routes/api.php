@@ -17,20 +17,6 @@ use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
 
 
-//Posts
-Route::get('/posts', [PostController::class, 'allPosts']);
-Route::get('/posts/{id}', [PostController::class, 'viewPost']);
-Route::post('/posts', [PostController::class, 'createPost']);
-Route::put('/posts/{id}', [PostController::class, 'editPost']);
-Route::delete('/posts/{id}', [PostController::class, 'deletePost']);
-
-//Comentarios
-Route::get('/comments', [CommentController::class, 'allComments']);
-Route::get('/comments/{id}', [CommentController::class, 'viewComment']);
-Route::post('/comments', [CommentController::class, 'createComment']);
-Route::put('/comments/{id}', [CommentController::class, 'editComment']);
-Route::delete('/comments/{id}', [CommentController::class, 'deleteComment']);
-
 //Amistades
 Route::get('/friendships', [FriendshipController::class, 'allFriendships']);
 Route::get('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'viewFriendship']);
@@ -59,38 +45,61 @@ Route::get('/messages/{chat_id}', [MessageController::class, 'allMessages']);
 Route::post('/messages', [MessageController::class, 'createMessage']);
 Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 
-// Login API debe estar fuera del grupo con auth:api
+
+
+// Metodos de Registro y Login de la API 
 Route::post('/apiLogin', [ApiAuthController::class, 'login']);
 Route::post('/apiRegister', [ApiAuthController::class, 'register']);
+
+//Se necesita el token del usuario para Cerrar sesion
 Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('auth:api');
 
 // Ejemplo de endpoint público
 Route::get('/public-data', [ApiController::class, 'publicData']);
 
-// Ejemplo de endpoint protegido
+//Crear Usuario
+Route::post('/users', [UserController::class, 'createUser']);
+
+// Ejemplo de endpoint protegido Se necesita el token del usuario para acceder
+//Todos los que esten registrados pueden acceder a este endpoint
 Route::middleware('auth:api')->group(function () {
     Route::get('/private-data', [ApiController::class, 'privateData']);
 
-    //Usuarios
 
-    Route::get('/users/{id}', [UserController::class, 'viewUser']);
-    Route::post('/users', [UserController::class, 'createUser']);
-    Route::put('/users/{id}', [UserController::class, 'editUser']);
-    Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+    //Posts
+    Route::get('/posts', [PostController::class, 'allPosts']);
+    Route::get('/posts/{id}', [PostController::class, 'viewPost']);
+    Route::post('/posts', [PostController::class, 'createPost']);
 
-    // Aquí puedes agregar más rutas protegidas
-});
-
-//Rutas protegidas para el propietario de la cuenta
-Route::middleware('auth:api','is_owner')->group(function () {
-    // Aquí puedes agregar más rutas protegidas
+    //Comentarios
+    Route::get('/comments', [CommentController::class, 'allComments']);
+    Route::get('/comments/{id}', [CommentController::class, 'viewComment']);
+    Route::post('/comments', [CommentController::class, 'createComment']);
 });
 
 //Rutas protegidas para el administrador
 Route::middleware(['auth:api', 'is_admin'])->group(function () {
-        
+
     //Usuarios 
     Route::get('/users', [UserController::class, 'allUsers']);
+});
 
-    
+//Rutas protegidas para el administrador o el propietario
+Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
+
+    //Usuarios
+    Route::post('/users/{id}', [UserController::class, 'viewUser']);
+    Route::put('/users/{id}', [UserController::class, 'editUser']);
+    Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+
+    //Posts
+    //No se puede editar la imagen porque por body-form da error en el required (Content-Type: multipart/form-data)
+    Route::put('/posts/{id}', [PostController::class, 'editPost']);
+    Route::delete('/posts/{id}', [PostController::class, 'deletePost']);
+
+    //Comentarios
+    Route::put('/comments/{id}', [CommentController::class, 'editComment']);
+    Route::delete('/comments/{id}', [CommentController::class, 'deleteComment']);
+
+
 });

@@ -40,8 +40,8 @@ class Tables extends Component
         if ($this->type && $this->condition) {
             $query->where($this->type, 'LIKE', "%{$this->condition}%");
         }
-
-        $tableData = $query->paginate(10);
+        $tableData = $query->get();
+        //$tableData = $query->paginate(10);
 
         return view('livewire.tables', [
             'tableData' => $tableData,

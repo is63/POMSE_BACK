@@ -22,6 +22,8 @@ class ApiAuthController extends Controller
         }
 
         return response()->json([
+            'message' => 'Inicio de sesión exitoso',
+            'user_info' => auth('api')->user(),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60
@@ -46,7 +48,7 @@ class ApiAuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        return response()->json(['message' => 'Usuario registrado correctamente', 'user' => $user], 201);
+        return response()->json(['message' => 'Usuario registrado correctamente', 'user_info' => $user], 201);
     }
 
     public function logout(Request $request)

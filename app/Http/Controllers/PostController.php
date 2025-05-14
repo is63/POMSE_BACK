@@ -88,16 +88,19 @@ class PostController
         try {
             $posts = Post::all();
             return response()->json($posts, 200);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
         }
     }
 
     public function viewPost($id)
-    {
-        $post = DB::table('posts')->where('id', $id)->first();
+    {try{
+        $post = DB::table('posts')->where('id', $id)->firstOrFail();
         return response()->json($post, 200);
+    }
+    catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener el post: ' . $e->getMessage()], 500);
+        }
     }
 
     public function createPost()
@@ -106,8 +109,10 @@ class PostController
             'titulo' => 'required|string|max:255',
             'imagen' => 'file|nullable',
             'descripcion' => 'string|nullable',
-            'usuario_id' => 'required|integer|exists:users,id',
         ]);
+
+        $data['usuario_id'] = auth()->id();
+
         if (request()->hasFile('imagen')) {
             $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
         }
@@ -122,11 +127,11 @@ class PostController
 
     public function editPost($id)
     {
-        $data = request()->validate([
+        try{
+$data = request()->validate([
             'titulo' => 'required|string|max:255',
             'imagen' => 'file|nullable',
             'descripcion' => 'string|nullable',
-            'usuario_id' => 'required|integer|exists:users,id',
         ]);
 
         $post = Post::findOrFail($id);
@@ -137,13 +142,14 @@ class PostController
 
         $data['updated_at'] = now();
 
-        //dd($data);
-
         $post->update($data);
 
         return response()->json(['message' => 'Post actualizado exitosamente.'], 200);
-
+    } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar el post: ' . $e->getMessage()], 500);
+        }
     }
+
 
     public function deletePost($id)
     {
