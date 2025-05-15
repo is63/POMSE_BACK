@@ -56,8 +56,10 @@ class MessageController
 
             // Verificar si los usuarios pertenecen al chat seleccionado
             $chat = Chat::find($request->chat_id);
-            if (!in_array($request->emisor_id, [$chat->participante_1, $chat->participante_2]) ||
-                !in_array($request->receptor_id, [$chat->participante_1, $chat->participante_2])) {
+            if (
+                !in_array($request->emisor_id, [$chat->participante_1, $chat->participante_2]) ||
+                !in_array($request->receptor_id, [$chat->participante_1, $chat->participante_2])
+            ) {
                 return redirect()->back()->with('error', 'El emisor o el receptor no están en el chat seleccionado.');
             }
 
@@ -102,8 +104,10 @@ class MessageController
 
             // Verificar si los usuarios pertenecen al chat seleccionado
             $chat = Chat::find($request->chat_id);
-            if (!in_array($request->emisor_id, [$chat->participante_1, $chat->participante_2]) ||
-                !in_array($request->receptor_id, [$chat->participante_1, $chat->participante_2])) {
+            if (
+                !in_array($request->emisor_id, [$chat->participante_1, $chat->participante_2]) ||
+                !in_array($request->receptor_id, [$chat->participante_1, $chat->participante_2])
+            ) {
                 return redirect()->back()->with('error', 'El emisor o el receptor no están en el chat seleccionado.');
             }
 
@@ -135,10 +139,25 @@ class MessageController
         $message->delete();
         return redirect()->route('messages.index')->with('success', 'Mensaje eliminado exitosamente.');
     }
-    public function allMessages($chat_id)
+
+    //--------------Funciones para API----------------//
+    public function allMessages()
+    {
+        try {
+            $messages = DB::table('messages')->get();
+            return response()->json($messages);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los mensajes: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function allMessagesOfChat($chat_id)
     {
         try {
             $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
+            if ($messages->isEmpty()) {
+                return response()->json(['error' => 'No hay mensajes en este chat'], 404);
+            }
             return response()->json($messages);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los mensajes: ' . $e->getMessage()], 500);
@@ -149,21 +168,50 @@ class MessageController
     {
         try {
             $data = request()->validate([
-                'emisor_id' => 'required|exists:users,id',
-                'receptor_id' => 'required|exists:users,id',
                 'chat_id' => 'required|exists:chats,id',
                 'texto' => 'required|string|max:500',
                 'imagen' => 'nullable|image',
             ]);
-            $data['created_at'] = now();
-            $data['updated_at'] = now();
 
-            DB::table('messages')->insert($data);
+            $emisor_id = auth()->id();
+
+            // Obtener el chat y los participantes
+            $chat = DB::table('chats')->where('id', $data['chat_id'])->first();
+
+            if (!$chat) {
+                return response()->json(['error' => 'No existe el chat especificado'], 404);
+            }
+
+            // Determinar el receptor: el otro participante del chat
+            if ($chat->participante_1 == $emisor_id) {
+                $receptor_id = $chat->participante_2;
+            } elseif ($chat->participante_2 == $emisor_id) {
+                $receptor_id = $chat->participante_1;
+            } else {
+                return response()->json(['error' => 'No perteneces a este chat'], 403);
+            }
+
+            $insertData = [
+                'chat_id' => $chat->id,
+                'emisor_id' => $emisor_id,
+                'receptor_id' => $receptor_id,
+                'texto' => $data['texto'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            if (request()->hasFile('imagen')) {
+                $insertData['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+            }
+
+            DB::table('messages')->insert($insertData);
+
             return response()->json(['mensaje' => 'Mensaje guardado correctamente']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al guardar el mensaje: ' . $e->getMessage()], 500);
         }
     }
+
     public function deleteMessage($id)
     {
         try {

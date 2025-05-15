@@ -4,11 +4,12 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithoutUrlPagination;
 use Illuminate\Support\Facades\DB;
 
 class Tables extends Component
 {
-    use WithPagination;
+    use WithPagination, WithoutUrlPagination;
 
     public $tableName;
     public $type;
@@ -37,11 +38,14 @@ class Tables extends Component
     {
         $query = DB::table($this->tableName);
 
-        if ($this->type && $this->condition) {
-            $query->where($this->type, 'LIKE', "%{$this->condition}%");
+        // Permite buscar cualquier valor
+        if ($this->type !== null && $this->condition !== null && $this->type !== '' && $this->condition !== '') {
+            // Si el usuario escribe "\0", busca el carácter nulo real
+            $condition = $this->condition === '\0' ? "\0" : $this->condition;
+            $query->where($this->type, 'LIKE', "%{$condition}%");
         }
-        $tableData = $query->get();
-        //$tableData = $query->paginate(10);
+
+        $tableData = $query->paginate(10);
 
         return view('livewire.tables', [
             'tableData' => $tableData,

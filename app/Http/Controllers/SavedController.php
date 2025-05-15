@@ -53,28 +53,42 @@ class SavedController
             }
 
             return redirect()->route('saveds.index')->with('success', 'Post guardado eliminado correctamente.');
-
         } catch (\Exception $e) {
             return redirect()->route('saveds.index')->with('error', 'Error al eliminar el post guardado: ' . $e->getMessage());
         }
     }
 
-    public function allSaveds($usuario_id)
+    //--------------Funciones para API----------------//
+
+    public function allSaveds()
     {
         try {
+            $saveds = DB::table('saveds')->get();
+            return response()->json($saveds);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los posts guardados: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function allSavedsOfUser()
+    {
+        try {
+            $usuario_id = auth()->id();
             $saveds = DB::table('saveds')->where('usuario_id', $usuario_id)->get();
             return response()->json($saveds);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los posts guardados: ' . $e->getMessage()], 500);
         }
     }
+
     public function createSaved()
     {
         try {
             $data = request()->validate([
-                'usuario_id' => 'required|exists:users,id',
                 'post_id' => 'required|exists:posts,id',
             ]);
+            // Toma el usuario_id del usuario autenticado
+            $data['usuario_id'] = auth()->id();
             $data['saved_at'] = now();
 
             DB::table('saveds')->insert($data);
@@ -83,14 +97,15 @@ class SavedController
             return response()->json(['error' => 'Error al guardar el post: ' . $e->getMessage()], 500);
         }
     }
-    public function deleteSaved($usuario_id, $post_id)
+
+    public function deleteSaved($post_id)
     {
         try {
+            $usuario_id = auth()->id();
             DB::table('saveds')->where('usuario_id', $usuario_id)->where('post_id', $post_id)->delete();
             return response()->json(['mensaje' => 'Post guardado eliminado correctamente']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar el post guardado: ' . $e->getMessage()], 500);
         }
     }
-
 }

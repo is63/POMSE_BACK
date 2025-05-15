@@ -131,9 +131,9 @@
                     </tbody>
                 </table>
             </div>
-            {{-- <div class="flex justify-center mt-8">
-                {{ $tableData->links('vendor.pagination.tailwind-blue') }}
-            </div>--}}
+             <div class="flex justify-center mt-8">
+                {{ $tableData->links('livewire::tailwind-blue') }}
+            </div>
         @else
             <p class="text-center text-gray-500 mt-4">La tabla está vacía.</p>
         @endif

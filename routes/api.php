@@ -17,35 +17,6 @@ use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
 
 
-//Amistades
-Route::get('/friendships', [FriendshipController::class, 'allFriendships']);
-Route::get('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'viewFriendship']);
-Route::post('/friendships', [FriendshipController::class, 'createFriendship']);
-Route::put('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'editFriendship']);
-Route::delete('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'deleteFriendship']);
-
-//Likes
-Route::get('/likes/{usuario_id}', [LikeController::class, 'allLikes']); //Ver likes de un usuario
-Route::post('/likes', [LikeController::class, 'createLike']);
-Route::delete('/likes/{usuario_id}/{post_id}', [LikeController::class, 'deleteLike']);
-
-//Saveds
-Route::get('/saveds/{usuario_id}', [SavedController::class, 'allSaveds']);
-Route::post('/saveds', [SavedController::class, 'createSaved']);
-Route::delete('/saveds/{usuario_id}/{post_id}', [SavedController::class, 'deleteSaved']);
-
-//Chats
-Route::get('/chats/{usuario}', [ChatController::class, 'allChats']);
-Route::post('/chats', [ChatController::class, 'createChat']);
-Route::put('/chats/{id}', [ChatController::class, 'editChat']);
-Route::delete('/chats/{id}', [ChatController::class, 'deleteChat']);
-
-//Mensajes
-Route::get('/messages/{chat_id}', [MessageController::class, 'allMessages']);
-Route::post('/messages', [MessageController::class, 'createMessage']);
-Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
-
-
 
 // Metodos de Registro y Login de la API 
 Route::post('/apiLogin', [ApiAuthController::class, 'login']);
@@ -57,11 +28,18 @@ Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('aut
 // Ejemplo de endpoint público
 Route::get('/public-data', [ApiController::class, 'publicData']);
 
+//Rutas públicas
+
 //Crear Usuario
 Route::post('/users', [UserController::class, 'createUser']);
 
+//Ver todos los Likes
+Route::get('/likes', [LikeController::class, 'allLikes']);
+Route::get('/likes/{usuario_id}', [LikeController::class, 'allLikesOfUser']); //Ver likes de un usuario
+
 // Ejemplo de endpoint protegido Se necesita el token del usuario para acceder
-//Todos los que esten registrados pueden acceder a este endpoint
+
+//Rutas protegidas para el usuario Registrado/Logeado
 Route::middleware('auth:api')->group(function () {
     Route::get('/private-data', [ApiController::class, 'privateData']);
 
@@ -75,6 +53,23 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/comments', [CommentController::class, 'allComments']);
     Route::get('/comments/{id}', [CommentController::class, 'viewComment']);
     Route::post('/comments', [CommentController::class, 'createComment']);
+
+    //Amistades 
+    Route::post('/friendships', [FriendshipController::class, 'createFriendship']);
+
+    //Likes
+    Route::post('/likes', [LikeController::class, 'createLike']);
+
+    //Guardados
+    Route::post('/saveds', [SavedController::class, 'createSaved']);
+
+    //Chats
+    Route::get('/chatsOfUser', [ChatController::class, 'allChatsOfUser']);
+    Route::post('/chats', [ChatController::class, 'createChat']);
+
+    //Mensajes
+    Route::get('/messages/{id}', [MessageController::class, 'allMessagesOfChat']);
+    Route::post('/messages', [MessageController::class, 'createMessage']);
 });
 
 //Rutas protegidas para el administrador
@@ -82,6 +77,20 @@ Route::middleware(['auth:api', 'is_admin'])->group(function () {
 
     //Usuarios 
     Route::get('/users', [UserController::class, 'allUsers']);
+
+    //Amistades
+    Route::get('/friendships', [FriendshipController::class, 'allFriendships']);
+
+    //Guardados
+    Route::get('/saveds', [SavedController::class, 'allSaveds']);
+
+    //Chats
+    Route::get('/chats', [ChatController::class, 'allChats']);
+
+    //Mensajes
+    Route::get('/messages', [MessageController::class, 'allMessages']);
+
+    
 });
 
 //Rutas protegidas para el administrador o el propietario
@@ -93,13 +102,30 @@ Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
     Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
     //Posts
-    //No se puede editar la imagen porque por body-form da error en el required (Content-Type: multipart/form-data)
+    //IMPORTANTE!!!!!!!!!! PARA QUE FUNCIONE EL PUT HAY QUE ENVARLO COMO POST Y AGREGAR UN CAMPO _method : PUT (al menos en postman)
     Route::put('/posts/{id}', [PostController::class, 'editPost']);
     Route::delete('/posts/{id}', [PostController::class, 'deletePost']);
 
     //Comentarios
-    Route::put('/comments/{id}', [CommentController::class, 'editComment']);
+    Route::put('/comments/{id}', [CommentController::class, 'editComment']); //Lo mismo que en Posts usar _method : PUT
     Route::delete('/comments/{id}', [CommentController::class, 'deleteComment']);
 
+    //Amistades
+    Route::get('/friendships/{usuario_id}', [FriendshipController::class, 'allFriendshipsByUser']);
+    Route::get('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'viewFriendship']);
+    Route::put('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'update']);
+    Route::delete('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'destroy']);
 
+    //Likes
+    Route::delete('/likes/{usuario_id}/{post_id}', [LikeController::class, 'deleteLike']);
+
+    //Guardados
+    Route::get('/savedsOfUser', [SavedController::class, 'allSavedsOfUser']);
+    Route::delete('/saveds/{post_id}', [SavedController::class, 'deleteSaved']);
+
+    //Chats
+    Route::delete('/chats/{id}', [ChatController::class, 'deleteChat']);
+
+    //Mensajes
+    Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 });

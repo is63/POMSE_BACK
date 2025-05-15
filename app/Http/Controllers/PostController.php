@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Post;
 
+use Illuminate\Support\Facades\Storage;
+
 class PostController
 {
     public function index()
@@ -83,6 +85,8 @@ class PostController
         return redirect()->route('posts.index')->with('success', 'Post eliminado exitosamente.');
     }
 
+
+    //--------------Funciones para API----------------//
     public function allPosts()
     {
         try {
@@ -94,11 +98,11 @@ class PostController
     }
 
     public function viewPost($id)
-    {try{
-        $post = DB::table('posts')->where('id', $id)->firstOrFail();
-        return response()->json($post, 200);
-    }
-    catch (\Exception $e) {
+    {
+        try {
+            $post = DB::table('posts')->where('id', $id)->firstOrFail();
+            return response()->json($post, 200);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener el post: ' . $e->getMessage()], 500);
         }
     }
@@ -127,29 +131,38 @@ class PostController
 
     public function editPost($id)
     {
-        try{
-$data = request()->validate([
-            'titulo' => 'required|string|max:255',
-            'imagen' => 'file|nullable',
-            'descripcion' => 'string|nullable',
-        ]);
+        try {
+            $request = request();
 
-        $post = Post::findOrFail($id);
-        if (request()->hasFile('imagen')) {
-            $data['imagen'] = request()->file('imagen')->store('imagenes', 'public');
-            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
-        }
+            $data = $request->validate([
+                'titulo' => 'string|max:255',
+                'imagen' => 'file|nullable',
+                'descripcion' => 'string|nullable',
+            ]);
 
-        $data['updated_at'] = now();
+            $post = Post::findOrFail($id);
 
-        $post->update($data);
+                //Si hay una imagen nueva, eliminar la anterior
+            if ($request->hasFile('imagen')) {
+                if ($post->imagen && Storage::disk('public')->exists(str_replace('storage/', '', $post->imagen))) {
+                    Storage::disk('public')->delete(str_replace('storage/', '', $post->imagen));
+                }
+                $data['imagen'] = 'storage/' . $request->file('imagen')->store('imagenes', 'public');
+            }
 
-        return response()->json(['message' => 'Post actualizado exitosamente.'], 200);
-    } catch (\Exception $e) {
+            if (!isset($data['titulo'])) {
+                $data['titulo'] = $post->titulo;
+            }
+
+            $data['updated_at'] = now();
+
+            $post->update($data);
+
+            return response()->json(['message' => 'Post actualizado exitosamente.'], 200);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Error al actualizar el post: ' . $e->getMessage()], 500);
         }
     }
-
 
     public function deletePost($id)
     {

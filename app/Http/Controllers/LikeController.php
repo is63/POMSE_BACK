@@ -41,7 +41,19 @@ class LikeController
         return redirect()->route('likes.index')->with('success', 'Like eliminado exitosamente.');
     }
 
-    public function allLikes($usuario_id)
+    //--------------Funciones para API----------------//
+
+    public function allLikes()
+    {
+        try {
+            $likes = DB::table('likes')->get();
+            return response()->json($likes);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los likes: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function allLikesOfUser($usuario_id)
     {
         try {
             $likes = DB::table('likes')->where('usuario_id', $usuario_id)->get();

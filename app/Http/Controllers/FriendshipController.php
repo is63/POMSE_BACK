@@ -82,7 +82,6 @@ class FriendshipController
             }
 
             return redirect()->route('friendships.index')->with('success', 'Amistad actualizada correctamente.');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al actualizar la amistad: ' . $e->getMessage());
         }
@@ -104,16 +103,30 @@ class FriendshipController
             }
 
             return redirect()->route('friendships.index')->with('success', 'Amistad eliminada correctamente.');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al eliminar la amistad: ' . $e->getMessage());
         }
     }
 
+
+    //-----------Funciones para la API ------------------------//
     public function allFriendships()
     {
         $friendships = DB::table('friendships')->get();
         return response()->json($friendships, 200);
+    }
+
+    public function allFriendshipsByUser($usuario_id)
+    {
+        try {
+            $friendships = DB::table('friendships')
+                ->where('usuario_id', $usuario_id)
+                ->get();
+
+            return response()->json($friendships, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener las amistades: ' . $e->getMessage()], 500);
+        }
     }
 
     public function viewFriendship($usuario_id, $amigo_id)
@@ -131,8 +144,7 @@ class FriendshipController
     }
 
     public function createFriendship()
-    {
-        {
+    { {
             try {
 
                 $data = request()->validate([
@@ -179,8 +191,7 @@ class FriendshipController
                 ->update($data);
 
             return response()->json(['success' => 'Amistad actualizada exitosamente.'], 200);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Error al actualizar la amistad: ' . $e->getMessage()], 500);
         }
     }
