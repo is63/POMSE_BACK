@@ -18,7 +18,8 @@ class CommentFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition(): array
-    {
+    {  
+    
         $usuarios = DB::table('users')->pluck('id')->toArray();
         $usuario_id = fake()->randomElement($usuarios);
 
@@ -31,8 +32,6 @@ class CommentFactory extends Factory
             'usuario_id' => $usuario_id,
             'post_id' => $post_id,
         ];
-        /*Crear un usuario asignado a un post y 3 comentario
-            App\Models\User::factory()->has(App\Models\Comment::factory()->count(3)->for(App\Models\Post::factory()))->create();*/
-        //This will create a User, a Post, and 3 Comments associated with the Post.
+
     }
 }

@@ -6,8 +6,6 @@ use App\Models\Chat;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class MessageFactory extends Factory
 {
@@ -15,21 +13,28 @@ class MessageFactory extends Factory
 
     public function definition(): array
     {
-        $emisor = DB::table('users')->pluck('id')->toArray();
-        $emisor_id = fake()->randomElement($emisor);
+        $chat = Chat::inRandomOrder()->first();
 
-        $receptor = DB::table('users')->pluck('id')->toArray();
-        $receptor = array_diff($receptor, [$emisor_id]);
-        $receptor_id = fake()->randomElement($receptor);
+        // Si no hay chats, crea uno con dos usuarios
+        if (!$chat) {
+            $users = User::inRandomOrder()->take(2)->pluck('id');
+            $chat = Chat::create([
+                'participante_1' => $users[0],
+                'participante_2' => $users[1],
+            ]);
+        }
 
-        $chats = DB::table('chats')->pluck('id')->toArray();
-        $chat_id = fake()->randomElement($chats);
+        $emisor_id = fake()->randomElement([$chat->participante_1, $chat->participante_2]);
+        $receptor_id = $emisor_id == $chat->participante_1 ? $chat->participante_2 : $chat->participante_1;
+
         return [
             'texto' => $this->faker->text(20),
             'imagen' => $this->faker->imageUrl(),
             'emisor_id' => $emisor_id,
             'receptor_id' => $receptor_id,
-            'chat_id' => $chat_id,
+            'chat_id' => $chat->id,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

@@ -19,14 +19,14 @@ class FriendshipFactory extends Factory
     {
         $usuarios = User::pluck('id')->toArray();
         $usuario_id = fake()->randomElement($usuarios);
+        $amigo_id = fake()->randomElement(array_diff($usuarios, [$usuario_id]));
 
-        $amigos = User::pluck('id')->toArray();
-        $amigos = array_diff($amigos, [$usuario_id]);
-        $amigo_id = fake()->randomElement($amigos);
         return [
             'usuario_id' => $usuario_id,
             'amigo_id' => $amigo_id,
-            'accepted' => fake()->randomElement([true,false]),
+            'accepted' => fake()->boolean(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

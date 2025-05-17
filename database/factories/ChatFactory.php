@@ -18,17 +18,15 @@ class ChatFactory extends Factory
      */
     public function definition(): array
     {
-        $participante1 = DB::table('users')->pluck('id')->toArray();
-        $participante1_id = fake()->randomElement($participante1);
-
-        $participante2 = DB::table('users')->pluck('id')->toArray();
-        $participante2 = array_diff($participante2, [$participante1_id]);
-        $participante2_id = fake()->randomElement($participante2);
-
+        $users = User::pluck('id')->toArray();
+        $participante_1 = fake()->randomElement($users);
+        $participante_2 = fake()->randomElement(array_diff($users, [$participante_1]));
 
         return [
-            'participante_1' => $participante1_id,
-            'participante_2' => $participante2_id,
+            'participante_1' => $participante_1,
+            'participante_2' => $participante_2,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

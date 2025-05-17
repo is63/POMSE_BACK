@@ -19,38 +19,48 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    User::factory(10)->create();
-    Post::factory(10)->create();
-    Comment::factory(10)->create();
-    for($i = 0; $i < 10; $i++){
-        try{Friendship::factory()->create();}
-        catch (\Exception $e){}
-    }
-    for($i = 0; $i < 10; $i++) {
-        try {
-            Saved::factory()->create();
-        }
-        catch (\Exception $e){}
-        }
-    for($i = 0; $i < 10; $i++){
-        try {
-            Like::factory()->create();
-        }
-        catch (\Exception $e){}
-    }
-    for ($i = 0; $i < 10; $i++){
-        try {
-            Friendship::factory()->create();
-        }
-        catch (\Exception $e){}
-    }
-    for ($i = 0; $i < 10; $i++){
-        try {
-            Chat::factory()->create();
-        }
-        catch (\Exception $e){}
-    }
+        // Crear 15 usuarios
+        User::factory(15)->create();
 
-    Message::factory(10)->create();
+        // Crear 15 posts
+        Post::factory(15)->create();
+
+        // Crear 15 comentarios
+        Comment::factory(15)->create();
+
+        // Crear 15 amistades
+        for ($i = 0; $i < 15; $i++) {
+            try {
+                Friendship::factory()->create();
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Crear 15 guardados
+        for ($i = 0; $i < 15; $i++) {
+            try {
+                Saved::factory()->create();
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Crear 15 likes
+        for ($i = 0; $i < 15; $i++) {
+            try {
+                Like::factory()->create();
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Crear 15 chats
+        for ($i = 0; $i < 15; $i++) {
+            try {
+                Chat::factory()->create();
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Crear 15 mensajes
+        Message::factory(15)->create();
     }
 }
