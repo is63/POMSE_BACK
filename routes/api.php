@@ -29,6 +29,8 @@ Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('aut
 Route::get('/public-data', [ApiController::class, 'publicData']);
 
 //Rutas públicas
+Route::get('/posts', [PostController::class, 'allPosts']);
+Route::get('/posts/{id}', [PostController::class, 'viewPost']);
 
 //Crear Usuario
 Route::post('/users', [UserController::class, 'createUser']);
@@ -45,8 +47,6 @@ Route::middleware('auth:api')->group(function () {
 
 
     //Posts
-    Route::get('/posts', [PostController::class, 'allPosts']);
-    Route::get('/posts/{id}', [PostController::class, 'viewPost']);
     Route::post('/posts', [PostController::class, 'createPost']);
 
     //Comentarios
@@ -89,8 +89,6 @@ Route::middleware(['auth:api', 'is_admin'])->group(function () {
 
     //Mensajes
     Route::get('/messages', [MessageController::class, 'allMessages']);
-
-    
 });
 
 //Rutas protegidas para el administrador o el propietario

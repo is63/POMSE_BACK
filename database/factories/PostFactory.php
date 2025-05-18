@@ -22,7 +22,7 @@ class PostFactory extends Factory
         $usuario_id = fake()->randomElement($usuarios);
         return [
             'titulo' => fake()->text(10),
-            'imagen' => fake()->imageUrl(),
+            'imagen' => fake()->randomElement(['storage/imagenes/uENGehY9MJm5IKC4Z4f7ilcG82WPf1I0xkHQbRRV.webp', 'storage/imagenes/a3LOoXtKLX2gMRQFx8LWoZduqv3qfEtUXHhUdODO.jpg',null]),
             'descripcion' => fake()->text(20),
             'usuario_id' => $usuario_id,
         ];
