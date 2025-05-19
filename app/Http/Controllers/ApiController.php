@@ -21,4 +21,14 @@ class ApiController extends Controller
             'user' => $user
         ], 200);
     }
+
+    public function checkToken(Request $request)
+    {
+        $user = $request->user();
+        if ($user) {
+            return response()->json(['message' => 'Token válido.', 'user' => $user], 200);
+        } else {
+            return response()->json(['message' => 'Token inválido.'], 401);
+        }
+    }
 }

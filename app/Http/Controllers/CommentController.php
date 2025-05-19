@@ -99,10 +99,21 @@ class CommentController
         return redirect()->route('comments.index')->with('success', 'Comentario eliminado exitosamente.');
     }
 
+    //------------------API-----------------------------//
     public function allComments()
     {
         $comments = DB::table('comments')->get();
         return response()->json($comments);
+    }
+    public function commentsOfPost($id)
+    { 
+        try{
+        $comments = DB::table('comments')->where('post_id', $id)->get();
+        return response()->json(['comments' => $comments]);
+        }
+        catch(\Exception $e){
+            return response()->json(['error' => 'Error al obtener los comentarios: ' . $e->getMessage()], 500);
+        }
     }
 
     public function viewComment($id)

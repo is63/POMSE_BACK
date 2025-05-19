@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use function Pest\Laravel\call;
+
 class UserController extends Controller
 {
 
@@ -111,9 +113,18 @@ class UserController extends Controller
 
     public function viewUser($id)
     {
-        $usuario = User::findOrFail(request()->id);
+        try{
+
+        $usuario = User::findOrFail($id);
         return response()->json($usuario, 200); // Return the user in JSON with 200 status
     }
+    catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+    } catch (\Exception $e) {
+        return response()->json(['mensaje' => 'Error al obtener el usuario: ' . $e->getMessage()], 500);
+    }   
+}
+   
 
     public function createUser()
     {

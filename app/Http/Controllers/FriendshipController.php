@@ -116,6 +116,25 @@ class FriendshipController
         return response()->json($friendships, 200);
     }
 
+    public function allFriendshipsOfUser()
+    {
+        $usuario_id = auth()->id();
+
+        if (!$usuario_id) {
+            return response()->json(['error' => 'El ID de usuario es requerido.'], 400);
+        }
+
+        try {
+            $friendships = DB::table('friendships')
+                ->where('usuario_id', $usuario_id)
+                ->get();
+
+            return response()->json($friendships, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener las amistades: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function allFriendshipsByUser($usuario_id)
     {
         try {

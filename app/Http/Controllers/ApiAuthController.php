@@ -48,7 +48,19 @@ class ApiAuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        return response()->json(['message' => 'Usuario registrado correctamente', 'user_info' => $user], 201);
+        // Generar token para el usuario recién registrado
+        $token = auth('api')->attempt([
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
+
+        return response()->json([
+            'message' => 'Usuario registrado correctamente',
+            'user_info' => $user,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 300,
+        ], 201);
     }
 
     public function logout(Request $request)

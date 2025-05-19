@@ -53,6 +53,16 @@ class LikeController
         }
     }
 
+    public function likesOfPost($post_id)
+    {
+        try {
+            $likes = DB::table('likes')->where('post_id', $post_id)->get();
+            return response()->json(['likes' => $likes]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los likes: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function allLikesOfUser($usuario_id)
     {
         try {

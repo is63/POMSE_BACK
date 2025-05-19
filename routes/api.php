@@ -27,10 +27,14 @@ Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('aut
 
 // Ejemplo de endpoint público
 Route::get('/public-data', [ApiController::class, 'publicData']);
+Route::get('/check-token', [ApiController::class, 'checkToken'])->middleware('auth:api');
 
 //Rutas públicas
 Route::get('/posts', [PostController::class, 'allPosts']);
 Route::get('/posts/{id}', [PostController::class, 'viewPost']);
+
+Route::get('/comments', [CommentController::class, 'allComments']);
+Route::get('/commentsOfPost/{id}', [CommentController::class, 'commentsOfPost']);
 
 //Crear Usuario
 Route::post('/users', [UserController::class, 'createUser']);
@@ -38,6 +42,7 @@ Route::post('/users', [UserController::class, 'createUser']);
 //Ver todos los Likes
 Route::get('/likes', [LikeController::class, 'allLikes']);
 Route::get('/likes/{usuario_id}', [LikeController::class, 'allLikesOfUser']); //Ver likes de un usuario
+Route::get('/likesOfPost/{id}', [LikeController::class, 'likesOfPost']); //Ver likes de un post
 
 // Ejemplo de endpoint protegido Se necesita el token del usuario para acceder
 
@@ -45,16 +50,18 @@ Route::get('/likes/{usuario_id}', [LikeController::class, 'allLikesOfUser']); //
 Route::middleware('auth:api')->group(function () {
     Route::get('/private-data', [ApiController::class, 'privateData']);
 
+    //Usuarios
+    Route::get('/users/{id}', [UserController::class, 'viewUser']);
 
     //Posts
     Route::post('/posts', [PostController::class, 'createPost']);
 
     //Comentarios
-    Route::get('/comments', [CommentController::class, 'allComments']);
     Route::get('/comments/{id}', [CommentController::class, 'viewComment']);
     Route::post('/comments', [CommentController::class, 'createComment']);
 
     //Amistades 
+    Route::get('/friendshipsOfUser', [FriendshipController::class, 'allFriendshipsOfUser']);
     Route::post('/friendships', [FriendshipController::class, 'createFriendship']);
 
     //Likes
@@ -95,7 +102,6 @@ Route::middleware(['auth:api', 'is_admin'])->group(function () {
 Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
 
     //Usuarios
-    Route::post('/users/{id}', [UserController::class, 'viewUser']);
     Route::put('/users/{id}', [UserController::class, 'editUser']);
     Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
