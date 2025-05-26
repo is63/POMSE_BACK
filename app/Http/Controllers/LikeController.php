@@ -63,10 +63,14 @@ class LikeController
         }
     }
 
-    public function allLikesOfUser($usuario_id)
+    public function allLikesOfUser()
     {
         try {
-            $likes = DB::table('likes')->where('usuario_id', $usuario_id)->get();
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $likes = DB::table('likes')->where('usuario_id', $user->id)->get();
             return response()->json($likes);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los likes: ' . $e->getMessage()], 500);

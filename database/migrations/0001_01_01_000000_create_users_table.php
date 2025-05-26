@@ -31,7 +31,7 @@ return new class extends Migration {
                 'usuario' => 'admin',
                 'email' => 'admin@admin.com',
                 'bio' => 'Soy el administrador de la aplicación',
-                'foto' => 'public/imagenes/icono-usuario.png',
+                'foto' => 'storage/imagenes/perroEnfadao.jpeg',
                 'verificado' => true,
                 'is_admin' => true,
                 'password' => Hash::make('admin'),

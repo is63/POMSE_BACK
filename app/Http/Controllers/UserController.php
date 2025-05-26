@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+
 
 use function Pest\Laravel\call;
 
@@ -113,18 +113,27 @@ class UserController extends Controller
 
     public function viewUser($id)
     {
-        try{
+        try {
 
-        $usuario = User::findOrFail($id);
-        return response()->json($usuario, 200); // Return the user in JSON with 200 status
+            $usuario = User::findOrFail($id);
+            return response()->json($usuario, 200); // Return the user in JSON with 200 status
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => 'Error al obtener el usuario: ' . $e->getMessage()], 500);
+        }
     }
-    catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
-    } catch (\Exception $e) {
-        return response()->json(['mensaje' => 'Error al obtener el usuario: ' . $e->getMessage()], 500);
-    }   
-}
-   
+
+    public function viewSelf()
+    {
+        try {
+            $user = auth()->user();
+            return response()->json($user, 200); // Return the user in JSON with 200 status
+        } catch (\Exception $e) {
+            return response()->json(['mensaje' => 'Error al obtener el usuario: ' . $e->getMessage()], 500);
+        }
+    }
+
 
     public function createUser()
     {
@@ -145,32 +154,37 @@ class UserController extends Controller
         return response()->json(['mensaje' => 'El usuario se ha creado correctamente'], 201); // Return the user in JSON with 201 status
     }
 
-    public function editUser(Request $request, $id)
+    public function editUser(Request $request)
     {
         try {
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['mensaje' => 'No autenticado'], 401);
+            }
 
             $validated = $request->validate([
-                'usuario' => 'required|string|max:255',
-                'email' => 'required|email|max:255|unique:users,email,' . $id,
+                'usuario' => 'nullable|string|max:255|unique:users,usuario,' . $user->id,
+                'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
                 'password' => 'nullable|string|min:8',
                 'bio' => 'nullable|string',
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             ]);
 
-            // Buscamos el usuario por su ID
-            $user = User::findOrFail($id);
+            // Solo actualiza los campos enviados, los demás mantienen su valor anterior
+            $user->usuario = $validated['usuario'] ?? $user->usuario;
+            $user->email = $validated['email'] ?? $user->email;
+            $user->bio = $validated['bio'] ?? $user->bio;
 
-
-
-            // Si la contraseña está presente, la actualizamos, si no, la dejamos igual
-            if ($request->has('password')) {
-                $user->password = Hash::make($validated['password']);
+            if ($request->hasFile('foto')) {
+                $user->foto = 'storage/' . $request->file('foto')->store('imagenes', 'public');
             }
 
-            $validated['bio'] = $validated['bio'] ?? $user->bio; // Si bio es null, mantenemos el valor actual
-            $validated['foto'] = $validated['foto'] ?? $user->foto; // Si foto es null, mantenemos el valor actual
+            if (!empty($validated['password'])) {
+                $user->password = bcrypt($validated['password']);
+            }
 
-            $user->update($validated);
+            $user->save();
+
             return response()->json(['mensaje' => 'Usuario editado con exito'], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['mensaje' => 'Usuario no encontrado'], 404);

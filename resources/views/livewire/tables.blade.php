@@ -14,10 +14,9 @@
         @if (isset($columns) && count($columns) > 0)
             <select wire:model="type" wire:change="search"
                 class="rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-                <option value="">Campo a Buscar</option>
                 @foreach ($columns as $column)
-                    @if(!in_array($column, haystack: ['email_verified_at', 'remember_token']))
-                        <option value="{{ $column }}">{{ $column }}</option>
+                    @if(!in_array($column, haystack: ['email_verified_at', 'remember_token', 'created_at', 'updated_at','password','texto','imagen']))
+                        <option value="{{ $column }}" {{ $column =="usuario" ? "selected" : "" }}>{{ $column }}</option>
                     @endif
                 @endforeach
             </select>

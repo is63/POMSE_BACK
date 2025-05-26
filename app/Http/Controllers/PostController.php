@@ -87,15 +87,17 @@ class PostController
 
 
     //--------------Funciones para API----------------//
-    public function allPosts()
+    public function allPosts(Request $request)
     {
         try {
-            $posts = Post::all();
+            $limit = $request->query('limit', 10); // valor por defecto: 10
+            $posts = Post::orderBy('created_at', 'desc')->paginate($limit);
             return response()->json($posts, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
         }
     }
+
 
     public function viewPost($id)
     {
@@ -104,6 +106,20 @@ class PostController
             return response()->json($post, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener el post: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function viewPostOfUser()
+    {
+        try {
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $posts = Post::where('usuario_id', $user->id)->get();
+            return response()->json($posts, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
         }
     }
 
@@ -142,7 +158,7 @@ class PostController
 
             $post = Post::findOrFail($id);
 
-                //Si hay una imagen nueva, eliminar la anterior
+            //Si hay una imagen nueva, eliminar la anterior
             if ($request->hasFile('imagen')) {
                 if ($post->imagen && Storage::disk('public')->exists(str_replace('storage/', '', $post->imagen))) {
                     Storage::disk('public')->delete(str_replace('storage/', '', $post->imagen));

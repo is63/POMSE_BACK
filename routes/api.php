@@ -30,18 +30,20 @@ Route::get('/public-data', [ApiController::class, 'publicData']);
 Route::get('/check-token', [ApiController::class, 'checkToken'])->middleware('auth:api');
 
 //Rutas públicas
-Route::get('/posts', [PostController::class, 'allPosts']);
+Route::get('/posts', action: [PostController::class, 'allPosts']);
 Route::get('/posts/{id}', [PostController::class, 'viewPost']);
+Route::get('viewPostOfUser', [PostController::class, 'viewPostOfUser']);
 
 Route::get('/comments', [CommentController::class, 'allComments']);
 Route::get('/commentsOfPost/{id}', [CommentController::class, 'commentsOfPost']);
 
 //Crear Usuario
 Route::post('/users', [UserController::class, 'createUser']);
+Route::get('/users/{id}', [UserController::class, 'viewUser']);
 
 //Ver todos los Likes
 Route::get('/likes', [LikeController::class, 'allLikes']);
-Route::get('/likes/{usuario_id}', [LikeController::class, 'allLikesOfUser']); //Ver likes de un usuario
+Route::get('/likesOfUser', [LikeController::class, 'allLikesOfUser']); //Ver likes de un usuario
 Route::get('/likesOfPost/{id}', [LikeController::class, 'likesOfPost']); //Ver likes de un post
 
 // Ejemplo de endpoint protegido Se necesita el token del usuario para acceder
@@ -51,7 +53,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/private-data', [ApiController::class, 'privateData']);
 
     //Usuarios
-    Route::get('/users/{id}', [UserController::class, 'viewUser']);
+    Route::get('/viewUser', [UserController::class, 'viewSelf']);
+    
 
     //Posts
     Route::post('/posts', [PostController::class, 'createPost']);
@@ -102,7 +105,7 @@ Route::middleware(['auth:api', 'is_admin'])->group(function () {
 Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
 
     //Usuarios
-    Route::put('/users/{id}', [UserController::class, 'editUser']);
+    Route::put('/users', [UserController::class, 'editUser']);
     Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
     //Posts

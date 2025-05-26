@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Comment;
 
 class CommentController
 {
@@ -106,12 +107,11 @@ class CommentController
         return response()->json($comments);
     }
     public function commentsOfPost($id)
-    { 
-        try{
-        $comments = DB::table('comments')->where('post_id', $id)->get();
-        return response()->json(['comments' => $comments]);
-        }
-        catch(\Exception $e){
+    {
+        try {
+            $comments = Comment::where('post_id', $id)->orderBy('created_at', 'asc')->paginate(request('limit', 5));
+            return response()->json(['comments' => $comments]);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los comentarios: ' . $e->getMessage()], 500);
         }
     }

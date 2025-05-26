@@ -127,6 +127,7 @@ class FriendshipController
         try {
             $friendships = DB::table('friendships')
                 ->where('usuario_id', $usuario_id)
+                ->orWhere('amigo_id', $usuario_id)
                 ->get();
 
             return response()->json($friendships, 200);

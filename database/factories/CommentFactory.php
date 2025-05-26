@@ -28,7 +28,7 @@ class CommentFactory extends Factory
 
         return [
             'texto' => fake()->text(20),
-            'imagen' => fake()->imageUrl(),
+            'imagen' => fake()->randomElement(['storage/imagenes/gatoDePie.jpeg', 'storage/imagenes/gatoLengua.jpeg','storage/imagenes/gatoRisa.jpeg',null]),
             'usuario_id' => $usuario_id,
             'post_id' => $post_id,
         ];

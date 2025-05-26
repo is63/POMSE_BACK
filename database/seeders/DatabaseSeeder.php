@@ -19,48 +19,48 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear 15 usuarios
-        User::factory(15)->create();
+        // Crear 30 usuarios
+        User::factory(30)->create();
 
-        // Crear 15 posts
-        Post::factory(15)->create();
+        // Crear 30 posts
+        Post::factory(30)->create();
 
-        // Crear 15 comentarios
-        Comment::factory(15)->create();
+        // Crear 30 comentarios
+        Comment::factory(30)->create();
 
-        // Crear 15 amistades
-        for ($i = 0; $i < 15; $i++) {
+        // Crear 30 amistades
+        for ($i = 0; $i < 30; $i++) {
             try {
                 Friendship::factory()->create();
             } catch (\Exception $e) {
             }
         }
 
-        // Crear 15 guardados
-        for ($i = 0; $i < 15; $i++) {
+        // Crear 30 guardados
+        for ($i = 0; $i < 30; $i++) {
             try {
                 Saved::factory()->create();
             } catch (\Exception $e) {
             }
         }
 
-        // Crear 15 likes
-        for ($i = 0; $i < 15; $i++) {
+        // Crear 30 likes
+        for ($i = 0; $i < 30; $i++) {
             try {
                 Like::factory()->create();
             } catch (\Exception $e) {
             }
         }
 
-        // Crear 15 chats
-        for ($i = 0; $i < 15; $i++) {
+        // Crear 30 chats
+        for ($i = 0; $i < 30; $i++) {
             try {
                 Chat::factory()->create();
             } catch (\Exception $e) {
             }
         }
 
-        // Crear 15 mensajes
-        Message::factory(15)->create();
+        // Crear 30 mensajes
+        Message::factory(30)->create();
     }
 }

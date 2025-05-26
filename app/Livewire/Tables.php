@@ -12,7 +12,7 @@ class Tables extends Component
     use WithPagination, WithoutUrlPagination;
 
     public $tableName;
-    public $type;
+    public $type ="usuario";
     public $columns;
     public $condition;
 
