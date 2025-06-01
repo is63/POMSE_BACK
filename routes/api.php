@@ -27,7 +27,7 @@ Route::post('/apiLogout', [ApiAuthController::class, 'logout'])->middleware('aut
 
 // Ejemplo de endpoint público
 Route::get('/public-data', [ApiController::class, 'publicData']);
-Route::get('/check-token', [ApiController::class, 'checkToken'])->middleware('auth:api');
+Route::get('/check-token', [ApiController::class, 'checkToken']);
 
 //Rutas públicas
 Route::get('/posts', action: [PostController::class, 'allPosts']);

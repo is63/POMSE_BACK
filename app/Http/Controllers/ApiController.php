@@ -24,11 +24,27 @@ class ApiController extends Controller
 
     public function checkToken(Request $request)
     {
-        $user = $request->user();
-        if ($user) {
-            return response()->json(['message' => 'Token válido.', 'user' => $user], 200);
-        } else {
-            return response()->json(['message' => 'Token inválido.'], 401);
+        try {
+            // Intenta obtener el token con bearerToken()
+            $token = $request->bearerToken();
+            // Si falla, intenta extraerlo manualmente de la cabecera
+            if (!$token) {
+                $header = $request->header('Authorization');
+                if ($header && stripos($header, 'Bearer ') === 0) {
+                    $token = trim(substr($header, 7));
+                }
+            }
+            if (!$token) {
+                return response()->json(['message' => 'Token no proporcionado.'], 401);
+            }
+            $user = \Tymon\JWTAuth\Facades\JWTAuth::setToken($token)->authenticate();
+            if ($user) {
+                return response()->json(['message' => 'Token válido.', 'user' => $user], 200);
+            } else {
+                return response()->json(['message' => 'Token inválido.'], 401);
+            }
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['message' => 'Token inválido o expirado.'], 401);
         }
     }
 }
