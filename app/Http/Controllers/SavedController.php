@@ -81,6 +81,16 @@ class SavedController
         }
     }
 
+    public function allSavedsOfPost($post_id)
+    {
+        try {
+            $saveds = DB::table('saveds')->where('post_id', $post_id)->get();
+            return response()->json(['saveds' => $saveds]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los posts guardados: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function createSaved()
     {
         try {

@@ -166,14 +166,18 @@ class FriendshipController
     public function createFriendship()
     { {
             try {
+                $user_id = auth()->id();
+                if (!$user_id) {
+                    return response()->json(['error' => 'No autenticado'], 401);
+                }
 
                 $data = request()->validate([
-                    'usuario_id' => 'required|integer|exists:users,id',
                     'amigo_id' => 'required|integer|exists:users,id',
-                    'accepted' => 'boolean|nullable',
+                    
                 ]);
-
-                $data['accepted'] = isset($data['accepted']) ? 1 : 0;
+                
+                $data['usuario_id'] = $user_id; 
+                $data['accepted'] = 0;
                 $data['updated_at'] = now();
                 $data['created_at'] = now();
 
@@ -216,17 +220,85 @@ class FriendshipController
         }
     }
 
-    public function deleteFriendship($usuario_id, $amigo_id)
+    public function deleteFriendship()
     {
+        $user_id = auth()->id();
+        if (!$user_id) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
+
+        $amigo_id = request()->validate([
+            'amigo_id' => 'required|integer|exists:users,id',
+        ])['amigo_id'];
+
         $deleted = DB::table('friendships')
-            ->where('usuario_id', $usuario_id)
-            ->where('amigo_id', $amigo_id)
+            ->where(function ($query) use ($user_id, $amigo_id) {
+                $query->where('usuario_id', $user_id)->where('amigo_id', $amigo_id);
+            })
+            ->orWhere(function ($query) use ($user_id, $amigo_id) {
+                $query->where('usuario_id', $amigo_id)->where('amigo_id', $user_id);
+            })
             ->delete();
 
         if ($deleted) {
             return response()->json(['success' => 'Amistad eliminada exitosamente.'], 200);
         } else {
             return response()->json(['error' => 'Error al eliminar la amistad.'], 500);
+        }
+    }
+
+    public function acceptFriendship()
+    {
+        try {
+            $usuario_id = auth()->id();
+            if (!$usuario_id) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $amigo_id = request()->validate([
+                'amigo_id' => 'required|integer|exists:users,id',
+            ])['amigo_id'];
+
+            $updated = DB::table('friendships')
+                ->where('usuario_id', $amigo_id)
+                ->where('amigo_id', $usuario_id)
+                ->where('accepted', 0)
+                ->update([
+                    'accepted' => 1,
+                ]);
+
+            if ($updated) {
+                return response()->json(['success' => 'Amistad aceptada exitosamente.'], 200);
+            } else {
+                return response()->json(['error' => 'No se encontró la amistad pendiente para aceptar.'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al aceptar la amistad: ' . $e->getMessage()], 500);
+        }
+    }
+    public function declineFriendship()
+    {
+        try {
+            $usuario_id = auth()->id();
+            if (!$usuario_id) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $amigo_id = request()->validate([
+                'amigo_id' => 'required|integer|exists:users,id',
+            ])['amigo_id'];
+
+            $deleted = DB::table('friendships')
+                ->where('usuario_id', $amigo_id)
+                ->where('amigo_id', $usuario_id)
+                ->where('accepted', 0)
+                ->delete();
+
+            if ($deleted) {
+                return response()->json(['success' => 'Amistad rechazada exitosamente.'], 200);
+            } else {
+                return response()->json(['error' => 'No se encontró la amistad pendiente para rechazar.'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al rechazar la amistad: ' . $e->getMessage()], 500);
         }
     }
 }

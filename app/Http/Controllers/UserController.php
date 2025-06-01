@@ -205,4 +205,18 @@ class UserController extends Controller
             return response()->json(['message' => 'Error al eliminar el usuario: ' . $e->getMessage()], 500);
         }
     }
+
+    public function searchUser(Request $request)
+    {
+        $request->validate([
+            'usuario' => 'required|string|max:255',
+        ]);
+        $usuarios = User::where('usuario', 'LIKE', '%' . $request->usuario . '%')->get()->take(10);
+
+        if ($usuarios->isNotEmpty()) {
+            return response()->json($usuarios, 200);
+        } else {
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
+    }
 }

@@ -81,9 +81,14 @@ class LikeController
     {
         try {
             $data = request()->validate([
-                'usuario_id' => 'required|exists:users,id',
                 'post_id' => 'required|exists:posts,id',
             ]);
+
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $data['usuario_id'] = $user->id; // Asignar el ID del usuario autenticado
             $data['saved_at'] = now();
 
             DB::table('likes')->insert($data);
@@ -93,10 +98,30 @@ class LikeController
         }
     }
 
-    public function deleteLike($usuario_id, $post_id)
+    public function deleteLike($post_id)
     {
         try {
-            DB::table('likes')->where('usuario_id', $usuario_id)->where('post_id', $post_id)->delete();
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            DB::table('likes')->where('usuario_id', $user->id)->where('post_id', $post_id)->delete();
+            return response()->json(['mensaje' => 'Like eliminado correctamente']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar el like: ' . $e->getMessage()], 500);
+        }
+    }
+    public function deleteMyLike()
+    {
+        try {
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->json(['error' => 'No autenticado'], 401);
+            }
+            $data = request()->validate([
+                'post_id' => 'required|exists:posts,id',
+            ]);
+            DB::table('likes')->where('usuario_id', $user->id)->where('post_id', $data['post_id'])->delete();
             return response()->json(['mensaje' => 'Like eliminado correctamente']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar el like: ' . $e->getMessage()], 500);

@@ -132,7 +132,7 @@ class CommentController
             'texto' => 'required|string|max:500',
             //'usuario_id' => 'required|exists:users,id',
             'post_id' => 'required|exists:posts,id',
-            'imagen' => 'nullable|image',
+            'imagen' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,mov,avi,mkv,webm',
         ]);
 
         if (request()->hasFile('imagen')) {

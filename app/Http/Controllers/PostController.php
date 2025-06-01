@@ -65,8 +65,7 @@ class PostController
 
         $post = Post::findOrFail($id);
         if (request()->hasFile('imagen')) {
-            $data['imagen'] = request()->file('imagen')->store('imagenes', 'public');
-            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+            $data['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', options: 'public');
         }
 
         $data['updated_at'] = now();
@@ -127,7 +126,7 @@ class PostController
     {
         $data = request()->validate([
             'titulo' => 'required|string|max:255',
-            'imagen' => 'file|nullable',
+            'imagen' => 'file|nullable|mimes:jpeg,png,jpg,gif,webp,mp4,mov,avi,mkv,webm',
             'descripcion' => 'string|nullable',
         ]);
 
@@ -152,13 +151,13 @@ class PostController
 
             $data = $request->validate([
                 'titulo' => 'string|max:255',
-                'imagen' => 'file|nullable',
+                'imagen' => 'file|nullable|mimes:jpeg,png,jpg,gif,webp,mp4,mov,avi,mkv,webm',
                 'descripcion' => 'string|nullable',
             ]);
 
             $post = Post::findOrFail($id);
 
-            //Si hay una imagen nueva, eliminar la anterior
+            // Si hay una imagen/video nueva, eliminar la anterior
             if ($request->hasFile('imagen')) {
                 if ($post->imagen && Storage::disk('public')->exists(str_replace('storage/', '', $post->imagen))) {
                     Storage::disk('public')->delete(str_replace('storage/', '', $post->imagen));
