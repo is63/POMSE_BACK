@@ -30,9 +30,24 @@ services:
     networks:
       - laravel
 
+  phpmyadmin: # Nuevo servicio para phpMyAdmin
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_app
+    restart: always
+    environment:
+      PMA_HOST: db 
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8082:80" 
+    depends_on:
+      - db 
+    networks:
+      - laravel
+
 networks:
   laravel:
-
+    external: true
+    name: pomse_back_laravel 
 
 volumes:
   dbdata:

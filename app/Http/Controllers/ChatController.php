@@ -43,14 +43,21 @@ class ChatController
             })
             ->first();
         if ($existingChat) {
-            return redirect()->back()->with('error', 'El chat ya existe entre estos dos usuarios.');
+            // Devuelve el chat existente en vez de error
+            return response()->json(['chat' => $existingChat, 'mensaje' => 'El chat ya existe entre estos dos usuarios'], 200);
         }
 
         $data['updated_at'] = now();
         $data['created_at'] = now();
 
         DB::table('chats')->insert($data);
-        return redirect()->route('chats.index')->with('success', 'Chat creado exitosamente.');
+        // Recupera el chat recién creado para devolverlo
+        $newChat = DB::table('chats')
+            ->where('participante_1', $data['participante_1'])
+            ->where('participante_2', $data['participante_2'])
+            ->orderByDesc('id')
+            ->first();
+        return response()->json(['chat' => $newChat, 'mensaje' => 'Chat creado correctamente'], 201);
     }
 
     public function edit($id)
@@ -152,7 +159,7 @@ class ChatController
                 })
                 ->first();
             if ($existingChat) {
-                return response()->json(['error' => 'El chat ya existe entre estos dos usuarios'], 400);
+                return response()->json(['chat' => $existingChat, 'mensaje' => 'El chat ya existe entre estos dos usuarios'], 200);
             }
             $data['updated_at'] = now();
             $data['created_at'] = now();

@@ -1,32 +1,28 @@
 <?php
+// database/factories/ChatFactory.php
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Chat;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Chat>
- */
 class ChatFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        $users = User::pluck('id')->toArray();
-        $participante_1 = fake()->randomElement($users);
-        $participante_2 = fake()->randomElement(array_diff($users, [$participante_1]));
+    protected $model = Chat::class;
 
+    public function definition()
+    {
+        // Selecciona dos usuarios distintos
+        $userIds = User::pluck('id')->toArray();
+        if (count($userIds) < 2) {
+            // Si no hay suficientes usuarios, crea dos
+            $userIds = [User::factory()->create()->id, User::factory()->create()->id];
+        }
+        $participantes = $this->faker->randomElements($userIds, 2);
         return [
-            'participante_1' => $participante_1,
-            'participante_2' => $participante_2,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'participante_1' => $participantes[0],
+            'participante_2' => $participantes[1],
         ];
     }
 }

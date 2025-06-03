@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Chat;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class MessageController
 {
@@ -134,7 +137,7 @@ class MessageController
         $message = Message::findOrFail($id);
         if ($message->imagen) {
             // Eliminar la imagen del almacenamiento
-            \Storage::disk('public')->delete($message->imagen);
+            Storage::disk('public')->delete($message->imagen);
         }
         $message->delete();
         return redirect()->route('messages.index')->with('success', 'Mensaje eliminado exitosamente.');
@@ -154,64 +157,64 @@ class MessageController
     public function allMessagesOfChat($chat_id)
     {
         try {
-            $messages = DB::table('messages')->where('chat_id', $chat_id)->get();
-            if ($messages->isEmpty()) {
-                return response()->json(['error' => 'No hay mensajes en este chat'], 404);
-            }
+
+            $messages = DB::table('messages')->where('chat_id', $chat_id)->orderBy('created_at', 'asc')->get();
             return response()->json($messages);
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al obtener los mensajes: ' . $e->getMessage()], 500);
         }
     }
 
     public function createMessage()
-    {
-        try {
-            $data = request()->validate([
-                'chat_id' => 'required|exists:chats,id',
-                'texto' => 'required|string|max:500',
-                'imagen' => 'nullable|image',
-            ]);
+{
+    try {
+        $data = request()->validate([
+            'chat_id' => 'required|exists:chats,id',
+            'texto' => 'required|string|max:500',
+            'imagen' => 'nullable|image',
+        ]);
 
-            $emisor_id = auth()->id();
+        $emisor_id = auth()->id();
 
-            // Obtener el chat y los participantes
-            $chat = DB::table('chats')->where('id', $data['chat_id'])->first();
+        $chat = DB::table('chats')->where('id', $data['chat_id'])->first();
 
-            if (!$chat) {
-                return response()->json(['error' => 'No existe el chat especificado'], 404);
-            }
-
-            // Determinar el receptor: el otro participante del chat
-            if ($chat->participante_1 == $emisor_id) {
-                $receptor_id = $chat->participante_2;
-            } elseif ($chat->participante_2 == $emisor_id) {
-                $receptor_id = $chat->participante_1;
-            } else {
-                return response()->json(['error' => 'No perteneces a este chat'], 403);
-            }
-
-            $insertData = [
-                'chat_id' => $chat->id,
-                'emisor_id' => $emisor_id,
-                'receptor_id' => $receptor_id,
-                'texto' => $data['texto'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-
-            if (request()->hasFile('imagen')) {
-                $insertData['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
-            }
-
-            DB::table('messages')->insert($insertData);
-
-            return response()->json(['mensaje' => 'Mensaje guardado correctamente']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al guardar el mensaje: ' . $e->getMessage()], 500);
+        if (!$chat) {
+            return response()->json(['error' => 'No existe el chat especificado'], 404);
         }
-    }
 
+        if ($chat->participante_1 == $emisor_id) {
+            $receptor_id = $chat->participante_2;
+        } elseif ($chat->participante_2 == $emisor_id) {
+            $receptor_id = $chat->participante_1;
+        } else {
+            return response()->json(['error' => 'No perteneces a este chat'], 403);
+        }
+
+        $insertData = [
+            'chat_id' => $chat->id,
+            'emisor_id' => $emisor_id,
+            'receptor_id' => $receptor_id,
+            'texto' => $data['texto'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        if (request()->hasFile('imagen')) {
+            $insertData['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
+        }
+
+        // Guarda el mensaje usando el modelo Message para mejor manejo
+        $message = Message::create($insertData);
+
+        // Emitir evento Pusher para notificar a los participantes
+        broadcast(new MessageSent($message))->toOthers();
+
+        return response()->json(['mensaje' => 'Mensaje guardado correctamente']);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Error al guardar el mensaje: ' . $e->getMessage()], 500);
+    }
+}
     public function deleteMessage($id)
     {
         try {

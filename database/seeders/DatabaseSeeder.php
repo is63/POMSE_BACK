@@ -51,16 +51,5 @@ class DatabaseSeeder extends Seeder
             } catch (\Exception $e) {
             }
         }
-
-        // Crear 30 chats
-        for ($i = 0; $i < 30; $i++) {
-            try {
-                Chat::factory()->create();
-            } catch (\Exception $e) {
-            }
-        }
-
-        // Crear 30 mensajes
-        Message::factory(30)->create();
     }
 }

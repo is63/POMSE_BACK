@@ -15,6 +15,9 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\SavedController;
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::routes(['middleware' => ['auth:api']]);
 
 
 
@@ -87,7 +90,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/chats', [ChatController::class, 'createChat']);
     Route::delete('/chats/{id}', [ChatController::class, 'deleteChat']);
 
-    Route::get('/messages/{id}', [MessageController::class, 'allMessagesOfChat']);
+    Route::get('/messages/{chat_id}', [MessageController::class, 'allMessagesOfChat']); 
     Route::post('/messages', [MessageController::class, 'createMessage']);
     Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 });
