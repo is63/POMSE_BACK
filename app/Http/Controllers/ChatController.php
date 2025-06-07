@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Chat;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
 
 class ChatController
 {
@@ -20,84 +25,60 @@ class ChatController
         return view('chats.create', compact('usuarios'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $data = request()->validate([
-            'participante_1' => 'required|exists:users,id',
-            'participante_2' => 'required|exists:users,id',
+        $data = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'is_group' => 'sometimes|boolean',
+            'participantes' => 'required|array|size:2',
+            'participantes.*' => 'exists:users,id',
         ]);
+        $data['is_group'] = false; // Solo 2 participantes, no es grupo
 
-        // Verificar si los participantes son el mismo usuario
-        if ($data['participante_1'] === $data['participante_2']) {
-            return redirect()->back()->with('error', 'Los participantes no pueden ser el mismo usuario.');
-        }
-        // Verificar si el chat ya existe
-        $existingChat = DB::table('chats')
-            ->where(function ($query) use ($data) {
-                $query->where('participante_1', $data['participante_1'])
-                    ->where('participante_2', $data['participante_2']);
-            })
-            ->orWhere(function ($query) use ($data) {
-                $query->where('participante_1', $data['participante_2'])
-                    ->where('participante_2', $data['participante_1']);
-            })
-            ->first();
-        if ($existingChat) {
-            // Devuelve el chat existente en vez de error
-            return response()->json(['chat' => $existingChat, 'mensaje' => 'El chat ya existe entre estos dos usuarios'], 200);
+        // Si los selects de participantes vienen por separado, aseguramos que no sean iguales
+        if ($data['participantes'][0] == $data['participantes'][1]) {
+            return redirect()->back()->withInput()->with('error', 'Los participantes deben ser diferentes.');
         }
 
-        $data['updated_at'] = now();
-        $data['created_at'] = now();
+        $chat = Chat::create([
+            'name' => $data['name'] ?? null,
+            'is_group' => false,
+        ]);
+        $chat->users()->sync($data['participantes']);
 
-        DB::table('chats')->insert($data);
-        // Recupera el chat recién creado para devolverlo
-        $newChat = DB::table('chats')
-            ->where('participante_1', $data['participante_1'])
-            ->where('participante_2', $data['participante_2'])
-            ->orderByDesc('id')
-            ->first();
-        return response()->json(['chat' => $newChat, 'mensaje' => 'Chat creado correctamente'], 201);
+        return redirect()->route('chats.index')->with('success', 'Chat creado correctamente.');
     }
 
     public function edit($id)
     {
         $usuarios = DB::table('users')->get();
-        $chat = DB::table('chats')->where('id', $id)->first();
+        $chat = Chat::find($id);
         if (!$chat) {
             return redirect()->route('chats.index')->with('error', 'Chat no encontrado.');
         }
-        return view('chats.edit', compact('chat', 'usuarios'));
+        // Obtener los IDs de los participantes actuales
+        $participantes = $chat->users()->pluck('users.id')->toArray();
+        return view('chats.edit', compact('chat', 'usuarios', 'participantes'));
     }
 
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        $data = request()->validate([
-            'participante_1' => 'required|exists:users,id',
-            'participante_2' => 'required|exists:users,id',
+        $data = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'is_group' => 'sometimes|boolean',
+            'participantes' => 'required|array|min:2',
+            'participantes.*' => 'exists:users,id',
         ]);
-
-        // Verificar si los participantes son el mismo usuario
-        if ($data['participante_1'] === $data['participante_2']) {
-            return redirect()->back()->with('error', 'Los participantes no pueden ser el mismo usuario.');
-        }
-
-        $existingChat = DB::table('chats')
-            ->where(function ($query) use ($data) {
-                $query->where('participante_1', $data['participante_1'])
-                    ->where('participante_2', $data['participante_2']);
-            })
-            ->orWhere(function ($query) use ($data) {
-                $query->where('participante_1', $data['participante_2'])
-                    ->where('participante_2', $data['participante_1']);
-            })
-            ->first();
-        if ($existingChat) {
-            return redirect()->back()->with('error', 'El chat ya existe entre estos dos usuarios.');
-        }
-
+        $data['is_group'] = $request->has('is_group');
         $data['updated_at'] = now();
-        DB::table('chats')->where('id', $id)->update($data);
+        $chat = Chat::findOrFail($id);
+        $chat->update([
+            'name' => $data['name'],
+            'is_group' => $data['is_group'],
+            'updated_at' => $data['updated_at'],
+        ]);
+        // Sincronizar los participantes
+        $chat->users()->sync($data['participantes']);
         return redirect()->route('chats.index')->with('success', 'Chat actualizado exitosamente.');
     }
 
@@ -122,53 +103,83 @@ class ChatController
 
     public function allChatsOfUser()
     {
-        try {
-            $userId = auth()->id();
-            $chats = DB::table('chats')
-                ->where('participante_1', $userId)
-                ->orWhere('participante_2', $userId)
-                ->get();
-            return response()->json($chats);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al obtener los chats: ' . $e->getMessage()], 500);
+        $userId = Auth::id();
+
+        $user = Auth::user(); // Obtener el usuario autenticado
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
         }
+
+        // Obtener los chats del usuario, incluyendo los usuarios participantes y el último mensaje
+        $chats = $user->chats() // Usa la relación definida en el modelo User
+            ->with(['users' => function ($query) use ($user) {
+                // Cargar los otros participantes del chat, excluyendo al usuario actual
+                // Esto es útil para obtener fácilmente al "otro" usuario en un chat 1-a-1
+                $query->where('users.id', '!=', $user->id);
+            }])
+            ->withLastMessage() // Usa el scope para cargar el último mensaje y su timestamp
+            ->orderBy('last_message_at', 'desc') // Ordenar los chats por el más reciente
+            ->get();
+
+        // Formatear la respuesta para que sea más útil para el frontend
+        $formattedChats = $chats->map(function ($chat) use ($user) {
+            $otherUser = null;
+            // Si no es un grupo y hay otros usuarios en la relación 'users' (que ya excluye al actual)
+            if (!$chat->is_group && $chat->users->isNotEmpty()) {
+                $otherUser = $chat->users->first();
+            }
+
+            $lastMessage = $chat->messages->first(); // El scope withLastMessage ya carga esto
+
+            return [
+                'id' => $chat->id,
+                // 'name' => $chat->is_group ? $chat->name : ($otherUser ? $otherUser->usuario : 'Chat con usuario desconocido'),
+            ];
+        });
+
+        return response()->json($formattedChats);
     }
-    public function createChat()
+    public function createChat(Request $request)
     {
-        try {
-            $userId = auth()->id(); // Participante 1 será el usuario autenticado
+        $request->validate([
+            'user_ids' => 'required|array|min:1', // IDs de los usuarios a añadir al chat
+            'user_ids.*' => 'exists:users,id',
+            'name' => 'nullable|string|max:255',
+            'is_group' => 'boolean',
+        ]);
 
-            $data = request()->validate([
-                'participante_2' => 'required|exists:users,id',
-            ]);
-            $data['participante_1'] = $userId;
+        $currentUserId = Auth::id();
+        $participantIds = array_unique(array_merge([$currentUserId], $request->user_ids));
 
-            // Verificar si los participantes son el mismo usuario
-            if ($data['participante_1'] === $data['participante_2']) {
-                return response()->json(['error' => 'Los participantes no pueden ser el mismo usuario'], 400);
-            }
-            // Verificar si el chat ya existe
-            $existingChat = DB::table('chats')
-                ->where(function ($query) use ($data) {
-                    $query->where('participante_1', $data['participante_1'])
-                        ->where('participante_2', $data['participante_2']);
-                })
-                ->orWhere(function ($query) use ($data) {
-                    $query->where('participante_1', $data['participante_2'])
-                        ->where('participante_2', $data['participante_1']);
-                })
-                ->first();
-            if ($existingChat) {
-                return response()->json(['chat' => $existingChat, 'mensaje' => 'El chat ya existe entre estos dos usuarios'], 200);
-            }
-            $data['updated_at'] = now();
-            $data['created_at'] = now();
-
-            DB::table('chats')->insert($data);
-            return response()->json(['mensaje' => 'Chat creado correctamente']);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al crear el chat: ' . $e->getMessage()], 500);
+        if (count($participantIds) < 2) {
+            return response()->json(['message' => 'A chat must have at least two participants.'], 400);
         }
+
+        $isGroup = $request->boolean('is_group') || count($participantIds) > 2; // Si hay más de 2, es grupo
+
+        // Lógica para encontrar un chat existente (si es DM) o crear uno nuevo
+        if (!$isGroup && count($participantIds) == 2) {
+            // Es un DM, buscar si ya existe un chat entre estos dos usuarios
+            $chat = Chat::where('is_group', false)
+                ->whereHas('users', function ($query) use ($participantIds) {
+                    $query->whereIn('users.id', $participantIds);
+                }, '=', count($participantIds)) // Asegura que solo estos 2 usuarios estén en el chat
+                ->first();
+
+            if ($chat) {
+                return response()->json(['message' => 'Chat already exists', 'chat' => $chat->load('users')], 200);
+            }
+        }
+
+
+        $chat = Chat::create([
+            'name' => $request->name,
+            'is_group' => $isGroup,
+        ]);
+        $chat->users()->sync($participantIds);
+
+        return response()->json(['chat' => $chat->load('users')], 201);
     }
 
     public function deleteChat($id)
@@ -183,5 +194,11 @@ class ChatController
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al eliminar el chat: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function show($id)
+    {
+        $chat = Chat::with(['users', 'messages.user'])->findOrFail($id);
+        return response()->json($chat);
     }
 }

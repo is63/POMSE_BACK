@@ -11,11 +11,14 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SavedController;
+use App\Http\Controllers\ChatUserController;
 
 
 // Si no se esta Autorizado no se puede acceder
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {return view('welcome');});
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
     Route::resource('users', UserController::class);
     Route::resource('posts', PostController::class);
@@ -41,6 +44,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/chats/{chat}/participants', [MessageController::class, 'getChatParticipants']);
     Route::resource('messages', MessageController::class);
     Route::resource('chats', ChatController::class);
+
+    
+    Route::get('chat_user/{chat_id}/{user_id}/edit', [ChatUserController::class, 'edit'])->name('chat_user.edit');
+    Route::put('chat_user/{chat_id}/{user_id}', [ChatUserController::class, 'update'])->name('chat_user.update');
+    Route::delete('chat_user/{chat_id}/{user_id}', [ChatUserController::class, 'destroy'])->name('chat_user.destroy');
+
+    Route::resource('chat_user', ChatUserController::class)->except(['edit', 'update', 'destroy']);
 });
 
 

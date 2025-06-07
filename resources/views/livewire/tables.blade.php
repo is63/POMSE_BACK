@@ -15,8 +15,8 @@
             <select wire:model="type" wire:change="search"
                 class="rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                 @foreach ($columns as $column)
-                    @if(!in_array($column, haystack: ['email_verified_at', 'remember_token', 'created_at', 'updated_at','password','texto','imagen']))
-                        <option value="{{ $column }}" {{ $column =="usuario" ? "selected" : "" }}>{{ $column }}</option>
+                    @if(!in_array($column, ['email_verified_at', 'remember_token', 'created_at', 'updated_at', 'password', 'texto', 'imagen']))
+                        <option value="{{ $column }}" {{ $column == "usuario" ? "selected" : "" }}>{{ $column }}</option>
                     @endif
                 @endforeach
             </select>
@@ -56,12 +56,25 @@
                                             <ul class="py-1">
                                                 <li>
                                                     @if(!in_array($tableName, ['saveds', 'likes', 'friendships']))
-                                                        <a href="/users/{{ $data->id }}/edit"
-                                                            class="block px-4 text-center py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                                        @if($tableName === 'chat_user')
+                                                            <a href="/{{ $tableName }}/{{ $data->chat_id }}/{{ $data->user_id }}/edit"
+                                                                class="block px-4 text-center py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                                        @else
+                                                            <a href="/{{ $tableName}}/{{ $data->id }}/edit"
+                                                                class="block px-4 text-center py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
+                                                        @endif
                                                     @endif
                                                 </li>
                                                 <li>
-                                                    @if($tableName === 'saveds' || $tableName === 'likes')
+                                                    @if($tableName === 'chat_user')
+                                                        <form method="POST"
+                                                            action="/{{ $tableName }}/{{ $data->chat_id }}/{{ $data->user_id }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="block w-[100%] px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Borrar</button>
+                                                        </form>
+                                                    @elseif($tableName === 'saveds' || $tableName === 'likes')
                                                         <form method="POST"
                                                             action="/{{ $tableName }}/{{ $data->usuario_id }}/{{ $data->post_id }}">
                                                             @csrf
@@ -91,30 +104,32 @@
                                     </div>
                                 </td>
                                 @foreach($columns as $column)
-                                    @if(!in_array($column, haystack: ['email_verified_at', 'remember_token']))
-                                        @if($column === 'usuario_id' || $column === 'amigo_id' || $column === 'receptor_id' || $column === 'emisor_id' || $column === 'participante_1' || $column === 'participante_2')
+                                    @if(!in_array($column, ['email_verified_at', 'remember_token']))
+                                        @if($column === 'usuario_id' || $column === 'amigo_id' || $column === 'receptor_id' || $column === 'emisor_id')
                                             <td data-field="{{ $column }}" class="px-6 py-4 text-sm text-black max-w-[100] truncate">
                                                 <span class="font-semibold">
-                                                    {{ Illuminate\Support\Facades\DB::table('users')->where('id', $data->$column)->first()->usuario ?? 'Sin usuario' }}
+                                                    {{ optional(Illuminate\Support\Facades\DB::table('users')->where('id', $data->$column)->first())->usuario ?? 'Sin usuario' }}
+                                                </span>
+                                                <br>Id: {{ $data->$column }}
+                                            </td>
+                                        @elseif($column === 'chat_id')
+                                            @php
+                                                $participantes = Illuminate\Support\Facades\DB::table('chat_user')
+                                                    ->join('users', 'chat_user.user_id', '=', 'users.id')
+                                                    ->where('chat_user.chat_id', $data->$column)
+                                                    ->pluck('users.usuario')
+                                                    ->toArray();
+                                            @endphp
+                                            <td data-field="{{ $column }}" class="px-6 py-4 text-sm text-black max-w-[100] truncate">
+                                                <span class="font-semibold">
+                                                    [{{ implode(' - ', $participantes) }}]
                                                 </span>
                                                 <br>Id: {{ $data->$column }}
                                             </td>
                                         @elseif($column === 'post_id')
                                             <td data-field="{{ $column }}" class="px-6 py-4 text-sm text-black max-w-[100] truncate">
                                                 <span class="font-semibold">
-                                                    {{ Illuminate\Support\Facades\DB::table('posts')->where('id', $data->$column)->first()->titulo ?? 'Sin post' }}
-                                                </span>
-                                                <br>Id: {{ $data->$column }}
-                                            </td>
-                                        @elseif($column === 'chat_id')
-                                            @php
-                                                $chat = Illuminate\Support\Facades\DB::table('chats')->where('id', $data->$column)->first();
-                                                $participante1 =Illuminate\Support\Facades\DB::table('users')->where('id', $chat->participante_1)->first() ;
-                                                $participante2 =Illuminate\Support\Facades\DB::table('users')->where('id', $chat->participante_2)->first() ;
-                                            @endphp
-                                            <td data-field="{{ $column }}" class="px-6 py-4 text-sm text-black max-w-[100] truncate">
-                                                <span class="font-semibold">
-                                                    [{{ ($participante1->usuario ) . ' - ' . ($participante2->usuario ) }}]
+                                                    {{ optional(Illuminate\Support\Facades\DB::table('posts')->where('id', $data->$column)->first())->titulo ?? 'Sin post' }}
                                                 </span>
                                                 <br>Id: {{ $data->$column }}
                                             </td>
@@ -130,7 +145,7 @@
                     </tbody>
                 </table>
             </div>
-             <div class="flex justify-center mt-8">
+            <div class="flex justify-center mt-8">
                 {{ $tableData->links('livewire::tailwind-blue') }}
             </div>
         @else
@@ -139,7 +154,7 @@
     </div>
     <!-- Botón para crear -->
     <div class="mb-4 mt-8 text-center">
-        <form method="get" action="{{ url('/users/create') }}">
+        <form method="get" action="{{ url('/' . $tableName . '/create') }}">
             <button
                 class="bg-white hover:bg-green-500 text-green-500 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded">
                 Crear

@@ -1,41 +1,45 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
     <a href="{{ url('users') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Users</h3>
-        <svg xmlns="http://www.w3.org/2000/svg" height="44px" width="44px" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" height="44px" width="44px" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5.121 17.804A4 4 0 0112 15a4 4 0 016.879 2.804M15 11a4 4 0 11-8 0 4 4 0 018 0z"/>
+                d="M5.121 17.804A4 4 0 0112 15a4 4 0 016.879 2.804M15 11a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
     </a>
     <a href="{{ url('/friendships') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Friendships</h3>
         <svg height="44px" width="44px" fill="#000000" viewBox="-3 0 32 32" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
+            xmlns="http://www.w3.org/2000/svg">
             <path
-                d="M17.25 20.5c1.281 0.719 2 1.906 1.875 3.125-0.063 0.75-0.031 0.75-1 0.875-0.594 0.063-4.375 0.094-8.219 0.094-4.375 0-8.938-0.031-9.281-0.125-1.281-0.344-0.531-2.719 1.156-3.844 1.344-0.844 4.063-2.156 4.813-2.313 1.031-0.219 1.156-0.875 0-2.844-0.25-0.469-0.531-1.813-0.563-3.25-0.031-2.313 0.375-3.875 2.406-4.656 0.375-0.125 0.813-0.188 1.219-0.188 1.344 0 2.594 0.75 3.125 1.844 0.719 1.469 0.375 5.313-0.375 6.719-0.906 1.594-0.813 2.094 0.188 2.344 0.625 0.156 2.688 1.125 4.656 2.219zM24.094 18.531c1 0.531 1.563 1.5 1.469 2.438-0.031 0.563-0.031 0.594-0.781 0.688-0.375 0.063-2.344 0.094-4.656 0.094-0.406-0.969-1.188-1.844-2.25-2.406-1.219-0.688-2.656-1.406-3.75-1.875 0.719-0.344 1.344-0.625 1.625-0.688 0.781-0.188 0.875-0.625 0-2.188-0.219-0.375-0.469-1.438-0.5-2.563-0.031-1.813 0.375-3.063 1.938-3.656 0.313-0.094 0.656-0.156 0.969-0.156 1.031 0 2 0.563 2.406 1.438 0.531 1.156 0.281 4.156-0.281 5.281-0.688 1.25-0.625 1.625 0.156 1.813 0.5 0.125 2.094 0.906 3.656 1.781z"></path>
+                d="M17.25 20.5c1.281 0.719 2 1.906 1.875 3.125-0.063 0.75-0.031 0.75-1 0.875-0.594 0.063-4.375 0.094-8.219 0.094-4.375 0-8.938-0.031-9.281-0.125-1.281-0.344-0.531-2.719 1.156-3.844 1.344-0.844 4.063-2.156 4.813-2.313 1.031-0.219 1.156-0.875 0-2.844-0.25-0.469-0.531-1.813-0.563-3.25-0.031-2.313 0.375-3.875 2.406-4.656 0.375-0.125 0.813-0.188 1.219-0.188 1.344 0 2.594 0.75 3.125 1.844 0.719 1.469 0.375 5.313-0.375 6.719-0.906 1.594-0.813 2.094 0.188 2.344 0.625 0.156 2.688 1.125 4.656 2.219zM24.094 18.531c1 0.531 1.563 1.5 1.469 2.438-0.031 0.563-0.031 0.594-0.781 0.688-0.375 0.063-2.344 0.094-4.656 0.094-0.406-0.969-1.188-1.844-2.25-2.406-1.219-0.688-2.656-1.406-3.75-1.875 0.719-0.344 1.344-0.625 1.625-0.688 0.781-0.188 0.875-0.625 0-2.188-0.219-0.375-0.469-1.438-0.5-2.563-0.031-1.813 0.375-3.063 1.938-3.656 0.313-0.094 0.656-0.156 0.969-0.156 1.031 0 2 0.563 2.406 1.438 0.531 1.156 0.281 4.156-0.281 5.281-0.688 1.25-0.625 1.625 0.156 1.813 0.5 0.125 2.094 0.906 3.656 1.781z">
+            </path>
         </svg>
     </a>
     <a href="{{ url('/messages') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Messages</h3>
         <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M8 12H8.01M12 12H12.01M16 12H16.01M21.0039 12C21.0039 16.9706 16.9745 21 12.0039 21C9.9675 21 3.00463 21 3.00463 21C3.00463 21 4.56382 17.2561 3.93982 16.0008C3.34076 14.7956 3.00391 13.4372 3.00391 12C3.00391 7.02944 7.03334 3 12.0039 3C16.9745 3 21.0039 7.02944 21.0039 12Z"
-                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     </a>
+        <a href="{{ url('/chat_user') }}"
+            class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+            <h3 class="text-lg font-bold text-gray-700 mb-2">Chat User</h3>
+<svg fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 491.60 491.60" xml:space="preserve" stroke="#000000" stroke-width="5.407545000000001"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M189.785,1.565c-48.205,0-87.42,39.115-87.42,87.19c0,48.08,39.215,87.195,87.42,87.195 c48.2,0,87.415-39.115,87.415-87.195C277.2,40.68,237.985,1.565,189.785,1.565z M189.785,155.47 c-36.91,0-66.94-29.93-66.94-66.715c0-36.785,30.03-66.71,66.94-66.71c36.91,0,66.935,29.925,66.935,66.71 C256.72,125.54,226.695,155.47,189.785,155.47z"></path> </g> </g> <g> <g> <path d="M377.712,288.285c-6.362-44.97-38.609-82.918-82.802-96.13l-18.8-5.545l-86.67,86.42l-86.67-86.42l-18.84,5.555 C33.73,207.175,0,252.385,0,304.655v106.51h245.76v40.96h157.22l68.06,37.905v-37.905h20.555v-163.84H377.712z M245.76,390.685 H20.48v-86.03c0-43.15,27.855-80.47,69.28-92.86l7.15-2.105l92.53,92.26l92.53-92.26l7.11,2.095 c35.529,10.624,61.664,40.642,67.849,76.5H245.76V390.685z M471.115,431.645H450.56v23.535l-42.26-23.535H266.24v-122.88h204.875 V431.645z"></path> </g> </g> <g> <g> <rect x="286.716" y="339.485" width="163.84" height="20.48"></rect> </g> </g> <g> <g> <rect x="317.437" y="380.445" width="102.4" height="20.48"></rect> </g> </g> </g></svg>
+        </a>
     <a href="{{ url('/chats') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Chats</h3>
         <svg height="44px" width="44px" viewBox="0 0 1024 1024" class="icon" version="1.1"
-             xmlns="http://www.w3.org/2000/svg"
-             fill="#000000" data-darkreader-inline-fill=""
-             style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);">
+            xmlns="http://www.w3.org/2000/svg" fill="#000000" data-darkreader-inline-fill=""
+            style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-               stroke-linejoin="round"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <path
                     d="M885.8 383.8h-90.4c12.3 15.8 19.7 35.6 19.7 57.1v194c0 51.3-42 93.2-93.2 93.2H494.1c12.1 31 42.2 53.1 77.4 53.1h314.3c45.6 0 83-37.3 83-83V466.8c-0.1-45.7-37.4-83-83-83z"
@@ -57,14 +61,13 @@
         </svg>
     </a>
     <a href="{{ url('/posts') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Posts</h3>
-        <svg height="44px" width="44px" viewBox="0 0 1024 1024" fill="#000000" class="icon"
-             version="1.1" xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-fill=""
-             style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);">
+        <svg height="44px" width="44px" viewBox="0 0 1024 1024" fill="#000000" class="icon" version="1.1"
+            xmlns="http://www.w3.org/2000/svg" data-darkreader-inline-fill=""
+            style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-               stroke-linejoin="round"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <path
                     d="M296.55 232.086c-4.42 0-8.076-3.578-8.076-7.998s3.498-7.998 7.904-7.998h0.172c4.406 0 7.998 3.578 7.998 7.998s-3.592 7.998-7.998 7.998zM328.54 232.086c-4.42 0-8.074-3.578-8.074-7.998s3.498-7.998 7.904-7.998h0.17c4.406 0 7.998 3.578 7.998 7.998s-3.592 7.998-7.998 7.998zM936.356 232.086c-4.422 0-8.078-3.578-8.078-7.998s3.5-7.998 7.906-7.998h0.172c4.402 0 7.996 3.578 7.996 7.998s-3.594 7.998-7.996 7.998zM968.344 232.086c-4.418 0-8.074-3.578-8.074-7.998s3.5-7.998 7.902-7.998h0.172c4.406 0 8 3.578 8 7.998s-3.594 7.998-8 7.998zM248.082 504.002H56.14a7.994 7.994 0 0 1-7.998-7.998v-191.94a7.994 7.994 0 0 1 7.998-7.998h191.942a7.994 7.994 0 0 1 7.998 7.998v191.94a7.994 7.994 0 0 1-7.998 7.998z m-183.944-15.994h175.946V312.06H64.138v175.948zM40.628 184.1c-4.42 0-8.076-3.576-8.076-7.996 0-4.422 3.498-7.998 7.904-7.998h0.172a8.002 8.002 0 0 1 7.998 7.998 8 8 0 0 1-7.998 7.996zM72.62 184.1c-4.42 0-8.076-3.576-8.076-7.996 0-4.422 3.498-7.998 7.904-7.998h0.172a8.002 8.002 0 0 1 7.998 7.998 8.004 8.004 0 0 1-7.998 7.996zM104.61 184.1c-4.42 0-8.076-3.576-8.076-7.996 0-4.422 3.498-7.998 7.904-7.998h0.172a8.002 8.002 0 0 1 7.998 7.998 8.004 8.004 0 0 1-7.998 7.996z"
@@ -157,48 +160,43 @@
         </svg>
     </a>
     <a href="{{ url('/likes') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Likes</h3>
-        <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
+        <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M17.3605 20H6.00012C4.89555 20 4.00012 19.1046 4.00012 18V10H7.92975C8.59846 10 9.22292 9.6658 9.59385 9.1094L12.1095 5.3359C12.6659 4.5013 13.6026 4 14.6057 4H14.8197C15.4376 4 15.9076 4.55487 15.8061 5.1644L15.0001 10H18.5605C19.8226 10 20.7692 11.1547 20.5217 12.3922L19.3217 18.3922C19.1347 19.3271 18.3139 20 17.3605 20Z"
-                stroke="#292929" stroke-width="2.5" stroke-linecap="round"
-                stroke-linejoin="round"/>
+                stroke="#292929" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     </a>
     <a href="{{ url('/comments') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Comments</h3>
         <svg height="44px" width="44px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-             xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 29.338 29.338" xml:space="preserve"
-             fill="#000000" data-darkreader-inline-fill=""
-             style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);"><g
-                id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 29.338 29.338" xml:space="preserve" fill="#000000"
+            data-darkreader-inline-fill=""
+            style="--darkreader-inline-fill: var(--darkreader-background-000000, #000000);">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <g>
-                    <path
-                        style="fill: rgb(1, 0, 2); --darkreader-inline-fill: var(--darkreader-text-010002, #e7e5e2);"
+                    <path style="fill: rgb(1, 0, 2); --darkreader-inline-fill: var(--darkreader-text-010002, #e7e5e2);"
                         d="M27.184,1.605H2.156C0.967,1.605,0,2.572,0,3.76v17.572c0,1.188,0.967,2.155,2.156,2.155h13.543 l5.057,3.777c0.414,0.31,0.842,0.468,1.268,0.468c0.789,0,1.639-0.602,1.637-1.923v-2.322h3.523c1.188,0,2.154-0.967,2.154-2.155 V3.76C29.338,2.572,28.371,1.605,27.184,1.605z M27.34,21.332c0,0.085-0.068,0.155-0.154,0.155h-5.523v3.955l-5.297-3.956H2.156 c-0.086,0-0.154-0.07-0.154-0.155V3.759c0-0.085,0.068-0.155,0.154-0.155v0.001h25.029c0.086,0,0.154,0.07,0.154,0.155 L27.34,21.332L27.34,21.332z M5.505,10.792h4.334v4.333H5.505C5.505,15.125,5.505,10.792,5.505,10.792z M12.505,10.792h4.334v4.333 h-4.334V10.792z M19.505,10.792h4.334v4.333h-4.334V10.792z"
                         data-darkreader-inline-fill=""></path>
                 </g>
             </g>
-                        </svg>
+        </svg>
     </a>
     <a href="{{ url('/saveds') }}"
-       class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
+        class="bg-gray-200 rounded-lg shadow-md p-6 flex flex-col items-center justify-center h-32 hover:bg-gray-300">
         <h3 class="text-lg font-bold text-gray-700 mb-2">Saveds</h3>
-        <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none"
-             xmlns="http://www.w3.org/2000/svg">
+        <svg height="44px" width="44px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-               stroke-linejoin="round"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
                 <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd"
-                      d="M8.49565 20.0367C5.96837 18.1516 3 15.9375 3 12.0992C3 7.86196 7.95014 4.85701 12 8.93062C16.0499 4.85701 21 7.86196 21 12.0992C21 15.9375 18.0316 18.1516 15.5044 20.0367C15.2417 20.2327 14.9838 20.4251 14.7344 20.6154C13.8 21.3285 12.9 22 12 22C11.1 22 10.2 21.3285 9.26556 20.6154C9.01624 20.4251 8.75832 20.2327 8.49565 20.0367Z"
-                      fill="#1C274C" data-darkreader-inline-fill=""
-                      style="--darkreader-inline-fill: var(--darkreader-background-1c274c, #161f3d);"></path>
+                    d="M8.49565 20.0367C5.96837 18.1516 3 15.9375 3 12.0992C3 7.86196 7.95014 4.85701 12 8.93062C16.0499 4.85701 21 7.86196 21 12.0992C21 15.9375 18.0316 18.1516 15.5044 20.0367C15.2417 20.2327 14.9838 20.4251 14.7344 20.6154C13.8 21.3285 12.9 22 12 22C11.1 22 10.2 21.3285 9.26556 20.6154C9.01624 20.4251 8.75832 20.2327 8.49565 20.0367Z"
+                    fill="#1C274C" data-darkreader-inline-fill=""
+                    style="--darkreader-inline-fill: var(--darkreader-background-1c274c, #161f3d);"></path>
                 <path
                     d="M12 11.25C12.4142 11.25 12.75 11.5858 12.75 12V14.5C12.75 14.9142 12.4142 15.25 12 15.25C11.5858 15.25 11.25 14.9142 11.25 14.5V12C11.25 11.5858 11.5858 11.25 12 11.25Z"
                     fill="#1C274C" data-darkreader-inline-fill=""

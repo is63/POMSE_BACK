@@ -61,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
     //Usuarios
     Route::get('/viewUser', [UserController::class, 'viewSelf']);
     Route::get('/searchUser', [UserController::class, 'searchUser']);
+    Route::put('/users', [UserController::class, 'editUser']);
 
     //Posts
     Route::post('/posts', [PostController::class, 'createPost']);
@@ -83,14 +84,15 @@ Route::middleware('auth:api')->group(function () {
     //Guardados
     Route::post('/saveds', [SavedController::class, 'createSaved']);
     Route::delete('/saveds/{post_id}', [SavedController::class, 'deleteSaved']);
-
+    Route::get('/savedsOfUser', [SavedController::class, 'allSavedsOfUser']);
 
     //Chats y Mensajes en tiempo real con WebSockets
     Route::get('/chatsOfUser', [ChatController::class, 'allChatsOfUser']);
     Route::post('/chats', [ChatController::class, 'createChat']);
     Route::delete('/chats/{id}', [ChatController::class, 'deleteChat']);
+    Route::get('/chats/{id}', [ChatController::class, 'show']);
 
-    Route::get('/messages/{chat_id}', [MessageController::class, 'allMessagesOfChat']); 
+    Route::get('/chats/{chat}/messages', [MessageController::class, 'allMessagesOfChat']); 
     Route::post('/messages', [MessageController::class, 'createMessage']);
     Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 });
@@ -115,7 +117,6 @@ Route::middleware(['auth:api', 'is_admin'])->group(function () {
 Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
 
     //Usuarios
-    Route::put('/users', [UserController::class, 'editUser']);
     Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
     //Posts
@@ -135,9 +136,6 @@ Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
 
     //Likes
     Route::delete('/likes/{usuario_id}/{post_id}', [LikeController::class, 'deleteLike']);
-
-    //Guardados
-    Route::get('/savedsOfUser', [SavedController::class, 'allSavedsOfUser']);
 
     //Chats
     Route::delete('/chats/{id}', [ChatController::class, 'deleteChat']);

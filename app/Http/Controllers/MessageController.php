@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Chat;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\Chat;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class MessageController
 {
@@ -154,74 +154,59 @@ class MessageController
         }
     }
 
-    public function allMessagesOfChat($chat_id)
+    public function allMessagesOfChat(Chat $chat)
     {
-        try {
-
-            $messages = DB::table('messages')->where('chat_id', $chat_id)->orderBy('created_at', 'asc')->get();
-            return response()->json($messages);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al obtener los mensajes: ' . $e->getMessage()], 500);
+        // Asegúrate de que el usuario autenticado pertenezca a este chat
+        if (!Auth::user()->chats->contains($chat->id)) {
+            return response()->json(['message' => 'Unauthorized to view this chat.'], 403);
         }
+
+        $messages = $chat->messages()->with('user')->orderBy('created_at', 'asc')->get();
+        return response()->json($messages);
     }
 
-    public function createMessage()
-{
-    try {
-        $data = request()->validate([
+    public function createMessage(Request $request)
+    {
+        $request->validate([
             'chat_id' => 'required|exists:chats,id',
-            'texto' => 'required|string|max:500',
-            'imagen' => 'nullable|image',
+            'content' => 'nullable|string|max:1000',
+            'image' => 'nullable|image|max:2048', // Max 2MB
         ]);
 
-        $emisor_id = auth()->id();
+        $user = Auth::user();
+        $chat = Chat::findOrFail($request->chat_id);
 
-        $chat = DB::table('chats')->where('id', $data['chat_id'])->first();
-
-        if (!$chat) {
-            return response()->json(['error' => 'No existe el chat especificado'], 404);
+        // Asegúrate de que el usuario pertenezca al chat
+        if (!$chat->users->contains($user->id)) {
+            return response()->json(['message' => 'Unauthorized to send message to this chat.'], 403);
         }
 
-        if ($chat->participante_1 == $emisor_id) {
-            $receptor_id = $chat->participante_2;
-        } elseif ($chat->participante_2 == $emisor_id) {
-            $receptor_id = $chat->participante_1;
-        } else {
-            return response()->json(['error' => 'No perteneces a este chat'], 403);
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('chat_images', 'public');
         }
 
-        $insertData = [
-            'chat_id' => $chat->id,
-            'emisor_id' => $emisor_id,
-            'receptor_id' => $receptor_id,
-            'texto' => $data['texto'],
-            'created_at' => now(),
-            'updated_at' => now(),
-        ];
+        $message = $chat->messages()->create([
+            'user_id' => $user->id,
+            'content' => $request->content,
+            'image_path' => $imagePath,
+        ]);
 
-        if (request()->hasFile('imagen')) {
-            $insertData['imagen'] = 'storage/' . request()->file('imagen')->store('imagenes', 'public');
-        }
+        // Carga la relación 'user' para el evento para que el frontend tenga la información del remitente
+        $message->load('user');
 
-        // Guarda el mensaje usando el modelo Message para mejor manejo
-        $message = Message::create($insertData);
+        // Dispara el evento MessageSent
+        event(new MessageSent($message));
 
-        // Emitir evento Pusher para notificar a los participantes
-        broadcast(new MessageSent($message))->toOthers();
-
-        return response()->json(['mensaje' => 'Mensaje guardado correctamente']);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error al guardar el mensaje: ' . $e->getMessage()], 500);
+        return response()->json(['message' => $message], 201);
     }
-}
     public function deleteMessage($id)
     {
         try {
             $message = Message::findOrFail($id);
             if ($message->imagen) {
                 // Eliminar la imagen del almacenamiento
-                \Storage::disk('public')->delete($message->imagen);
+                Storage::disk('public')->delete($message->imagen);
             }
             $message->delete();
             return response()->json(['mensaje' => 'Mensaje eliminado correctamente']);

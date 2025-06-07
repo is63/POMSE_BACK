@@ -24,7 +24,15 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'usuario', 'email', 'password', 'bio', 'foto','is_admin', 'verificado','updated_at', 'created_at'
+        'usuario',
+        'email',
+        'password',
+        'bio',
+        'foto',
+        'is_admin',
+        'verificado',
+        'updated_at',
+        'created_at'
     ];
 
     /**
@@ -88,6 +96,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Post::class, 'likes', 'usuario_id', 'post_id')
             ->withPivot('saved_at');
     }
+    public function chats(): BelongsToMany
+    {
+        return $this->belongsToMany(Chat::class);
+    }
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -97,5 +113,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
 }

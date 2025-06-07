@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Chat extends Model
 {
@@ -12,21 +14,28 @@ class Chat extends Model
     protected $table = 'chats';
 
     protected $fillable = [
-        'participante_1', 'participante_2'
+        'name', 'is_group',
     ];
 
-    public function participante1(): BelongsTo
+       public function users(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'participante_1');
+        return $this->belongsToMany(User::class);
     }
 
-    public function participante2(): BelongsTo
+    public function messages(): HasMany
     {
-        return $this->belongsTo(User::class, 'participante_2');
+        return $this->hasMany(Message::class);
     }
 
-    public function mensajes()
-    {
-        return $this->hasMany(Message::class, 'chat_id');
-    }
+    public function scopeWithLastMessage(Builder $query): void
+{
+    $query->addSelect([
+        'last_message_at' => Message::select('created_at')
+            ->whereColumn('chat_id', 'chats.id')
+            ->latest()
+            ->limit(1)
+    ])->with(['messages' => function ($query) {
+        $query->orderBy('created_at', 'desc')->limit(1); // Carga el último mensaje para mostrarlo en el sidebar
+    }]);
+}
 }
