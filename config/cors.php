@@ -15,7 +15,7 @@ return [
     */
 
     'paths' => ['api/*', 'broadcasting/auth', 'sanctum/csrf-cookie'], 
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE',], 
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE','OPTIONS'], 
     'allowed_origins' =>   ['*'],//['localhost:8081', 'http://localhost:8081', ], 
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization', 'X-Socket-ID'], // Añadido X-Socket-ID
