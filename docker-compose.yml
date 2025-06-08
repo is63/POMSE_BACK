@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
     container_name: laravel_app
     restart: always
     ports:
@@ -46,7 +46,7 @@ services:
 
 networks:
   laravel:
-    external: true
+    #external: true
     name: pomse_back_laravel 
 
 volumes:

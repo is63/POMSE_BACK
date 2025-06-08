@@ -55,7 +55,7 @@
                                             class="absolute left-0 top-6 w-32 bg-white border border-gray-300 rounded shadow-lg z-10">
                                             <ul class="py-1">
                                                 <li>
-                                                    @if(!in_array($tableName, ['saveds', 'likes', 'friendships']))
+                                                    @if(!in_array($tableName, ['saveds', 'likes', 'friendships', 'messages']))
                                                         @if($tableName === 'chat_user')
                                                             <a href="/{{ $tableName }}/{{ $data->chat_id }}/{{ $data->user_id }}/edit"
                                                                 class="block px-4 text-center py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
