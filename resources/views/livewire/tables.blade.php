@@ -9,11 +9,11 @@
     @endif
     <div class="flex justify-center gap-2 mb-4 mt-12">
         <input type="text"
-            class="w-[90vh] rounded-md border border-gray-300 px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-green-500"
+            class="w-[90vh] rounded-md border border-gray-300 px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-100"
             placeholder="Buscar en la tabla" wire:model.live="condition" wire:keydown="search" />
         @if (isset($columns) && count($columns) > 0)
             <select wire:model="type" wire:change="search"
-                class="rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                class="rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-100">
                 @foreach ($columns as $column)
                     @if(!in_array($column, ['email_verified_at', 'remember_token', 'created_at', 'updated_at', 'password', 'texto', 'imagen']))
                         <option value="{{ $column }}" {{ $column == "usuario" ? "selected" : "" }}>{{ $column }}</option>
