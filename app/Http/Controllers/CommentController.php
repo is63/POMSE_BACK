@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Comment;
+
 
 class CommentController
 {
@@ -143,7 +145,11 @@ class CommentController
         $data['updated_at'] = now();
         $data['created_at'] = now();
 
-        DB::table('comments')->insert($data);
+          $commentId = DB::table('comments')->insertGetId($data);
+
+        $comment = Comment::find($commentId);
+
+        event(new CommentCreated($comment));
 
         return response()->json(['success' => 'Comentario creado exitosamente'], 201);
     }

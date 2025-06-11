@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Route;
 
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CommentController;
@@ -95,6 +93,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/chats/{chat}/messages', [MessageController::class, 'allMessagesOfChat']); 
     Route::post('/messages', [MessageController::class, 'createMessage']);
     Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
+
+    Route::delete('/friendships', [FriendshipController::class, 'deleteFriendship']);
 });
 
 //Rutas protegidas para el administrador
@@ -132,7 +132,7 @@ Route::middleware(['auth:api', 'owner_or_admin'])->group(function () {
     Route::get('/friendships/{usuario_id}', [FriendshipController::class, 'allFriendshipsByUser']);
     Route::get('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'viewFriendship']);
     Route::put('/friendships/{usuario_id}/{amigo_id}', [FriendshipController::class, 'update']);
-    Route::delete('/friendships', [FriendshipController::class, 'deleteFriendship']);
+    
 
     //Likes
     Route::delete('/likes/{usuario_id}/{post_id}', [LikeController::class, 'deleteLike']);

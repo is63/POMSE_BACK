@@ -16,11 +16,18 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-// Canal privado para un chat específico
 Broadcast::channel('chat.{chatId}', function ($user, $chatId) {
-    // Solo permite si el usuario está autenticado y es participante del chat
     $chat = Chat::find($chatId);
     if (!$chat) return false;
 
     return $chat->users->contains($user->id);
-}, ['middleware' => ['auth:api']]);
+}, ['guards' => ['api']]);
+
+// Canal público para comentarios en posts
+Broadcast::channel('comments-post.{postId}', function ($postId) {
+    return true; // Público, cualquiera puede escuchar
+});
+
+Broadcast::channel('friend-requests.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+}, ['guards' => ['api']]);

@@ -7,13 +7,15 @@ return [
     'connections' => [
 
         'pusher' => [
+            'guards' => ['api'], 
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'encrypted' => true, // Importante para usar HTTPS
+                'encrypted' => false, // Importante para usar HTTPS
+                'useTLS' => true, // Asegúrate de que esté habilitado para usar TLS
                 'host' => 'api-' . $_ENV['PUSHER_APP_CLUSTER'] . '.pusher.com', // Asegúrate de que apunte al host correcto
                 'port' => 443,
                 'scheme' => 'https',

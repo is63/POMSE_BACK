@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Friendship;
 use App\Models\User;
 
+use App\Events\FriendRequestUpdated;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -173,17 +175,21 @@ class FriendshipController
 
                 $data = request()->validate([
                     'amigo_id' => 'required|integer|exists:users,id',
-                    
                 ]);
-                
-                $data['usuario_id'] = $user_id; 
+
+                $data['usuario_id'] = $user_id;
                 $data['accepted'] = 0;
                 $data['updated_at'] = now();
                 $data['created_at'] = now();
 
-                //dd($data);
-
                 DB::table('friendships')->insert($data);
+
+                // Disparar evento para el destinatario
+                event(new FriendRequestUpdated($data['amigo_id'], [
+                    'type' => 'created',
+                    'from' => $user_id
+                ]));
+
                 return response()->json(['message' => 'Amistad creada exitosamente.'], 201);;
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al crear la amistad: ' . $e->getMessage()], 500);
@@ -240,11 +246,20 @@ class FriendshipController
             })
             ->delete();
 
-        if ($deleted) {
-            return response()->json(['success' => 'Amistad eliminada exitosamente.'], 200);
-        } else {
-            return response()->json(['error' => 'Error al eliminar la amistad.'], 500);
-        }
+           if ($deleted) {
+        // Emitir evento para ambos usuarios
+        event(new FriendRequestUpdated($user_id, [
+            'type' => 'deleted',
+            'from' => $amigo_id
+        ]));
+        event(new FriendRequestUpdated($amigo_id, [
+            'type' => 'deleted',
+            'from' => $user_id
+        ]));
+        return response()->json(['success' => 'Amistad eliminada exitosamente.'], 200);
+    } else {
+        return response()->json(['error' => 'Error al eliminar la amistad.'], 500);
+    }
     }
 
     public function acceptFriendship()
@@ -267,6 +282,11 @@ class FriendshipController
                 ]);
 
             if ($updated) {
+                // Disparar evento para el destinatario
+                event(new FriendRequestUpdated($amigo_id, [
+                    'type' => 'accepted',
+                    'from' => $usuario_id
+                ]));
                 return response()->json(['success' => 'Amistad aceptada exitosamente.'], 200);
             } else {
                 return response()->json(['error' => 'No se encontró la amistad pendiente para aceptar.'], 404);
@@ -292,11 +312,20 @@ class FriendshipController
                 ->where('accepted', 0)
                 ->delete();
 
-            if ($deleted) {
-                return response()->json(['success' => 'Amistad rechazada exitosamente.'], 200);
-            } else {
-                return response()->json(['error' => 'No se encontró la amistad pendiente para rechazar.'], 404);
-            }
+           if ($deleted) {
+        // Emitir evento para ambos usuarios
+        event(new FriendRequestUpdated($usuario_id, [
+            'type' => 'deleted',
+            'from' => $amigo_id
+        ]));
+        event(new FriendRequestUpdated($amigo_id, [
+            'type' => 'deleted',
+            'from' => $usuario_id
+        ]));
+        return response()->json(['success' => 'Amistad eliminada exitosamente.'], 200);
+    } else {
+        return response()->json(['error' => 'Error al eliminar la amistad.'], 500);
+    }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error al rechazar la amistad: ' . $e->getMessage()], 500);
         }
