@@ -1,7 +1,6 @@
 FROM php:8.3.6-apache
 
-# Habilitamos módulos necesarios de Apache y PHP
-RUN a2enmod rewrite expires headers
+RUN a2enmod rewrite expires headers ssl
 
 # Instalamos extensiones necesarias para Laravel
 RUN apt-get update && apt-get install -y \
@@ -27,8 +26,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copia los archivos de la aplicación Laravel
-# ¡Importante! Asegúrate de tener un archivo .dockerignore en la raíz de tu proyecto
-# para excluir directorios como node_modules, .git, storage/logs/* (excepto .gitignore), etc.
 COPY . /var/www/html/
 
 # Instala las dependencias de Composer para producción
@@ -45,7 +42,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 80
+# Exponer los puertos 80 y 443
+EXPOSE 80 443
 
 # Usar el script de entrada
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
