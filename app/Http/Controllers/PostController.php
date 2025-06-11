@@ -121,6 +121,15 @@ class PostController
             return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
         }
     }
+    public function viewPostsOfUser($id)
+    {
+        try {
+            $posts = Post::where('usuario_id', $id)->orderBy('created_at', 'desc')->get();
+            return response()->json(['posts' => $posts], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
+        }
+    }
 
     public function createPost()
     {

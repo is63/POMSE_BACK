@@ -63,6 +63,7 @@ Route::middleware('auth:api')->group(function () {
 
     //Posts
     Route::post('/posts', [PostController::class, 'createPost']);
+    Route::get('/postsOfUser/{id}', [PostController::class, 'viewPostsOfUser']);
 
     //Comentarios
     Route::get('/comments/{id}', [CommentController::class, 'viewComment']);
@@ -95,6 +96,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/messages/{id}', [MessageController::class, 'deleteMessage']);
 
     Route::delete('/friendships', [FriendshipController::class, 'deleteFriendship']);
+    Route::get('numberOfFriends/{id}', [FriendshipController::class, 'getNumberOfFriends']);
 });
 
 //Rutas protegidas para el administrador
