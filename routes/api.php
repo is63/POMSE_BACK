@@ -50,7 +50,6 @@ Route::get('/likesOfUser', [LikeController::class, 'allLikesOfUser']); //Ver lik
 Route::get('/likesOfPost/{id}', [LikeController::class, 'likesOfPost']); //Ver likes de un post
 
 Route::get('/savedsOfPost/{post_id}', [SavedController::class, 'allSavedsOfPost']);
-// Ejemplo de endpoint protegido Se necesita el token del usuario para acceder
 
 //Rutas protegidas para el usuario Registrado/Logeado
 Route::middleware('auth:api')->group(function () {

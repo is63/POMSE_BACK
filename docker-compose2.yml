@@ -4,14 +4,15 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
+    #dockerfile: Dockerfile
+    container_name: laravel_app_https
     restart: always
     ports:
-      - "8080:80"
-    volumes:
-      - ./:/var/www/html
-      - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+        - "8443:443"
+   #volumes:
+  #  - ./:/var/www/html
+  #    - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+  #    - ./docker/certs:/etc/ssl 
     depends_on:
       - db
     networks:
@@ -24,13 +25,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3307:3306" # Puerto 3307 en el host, 3306 dentro del contenedor
+      - "3307:3306"  
     volumes:
       - dbdata:/var/lib/mysql
     networks:
       - laravel
 
-  phpmyadmin: # Nuevo servicio para phpMyAdmin
+  phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin_app
     restart: always
@@ -38,7 +39,7 @@ services:
       PMA_HOST: db 
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "8082:80" 
+      - "8082:80"
     depends_on:
       - db 
     networks:
@@ -46,8 +47,7 @@ services:
 
 networks:
   laravel:
-    #external: true
-    name: pomse_back_laravel 
+    name: pomse_back_laravel
 
 volumes:
   dbdata:
