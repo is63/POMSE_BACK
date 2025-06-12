@@ -112,6 +112,13 @@
                                                 </span>
                                                 <br>Id: {{ $data->$column }}
                                             </td>
+                                        @elseif($column === 'user_id' && isset($userNames))
+                                            <td data-field="user_id" class="px-6 py-4 text-sm text-black max-w-[100] truncate">
+                                                <span class="font-semibold">
+                                                    {{ $userNames[$data->user_id] ?? 'Sin usuario' }}
+                                                </span>
+                                                <br>Id: {{ $data->user_id }}
+                                            </td>
                                         @elseif($column === 'chat_id')
                                             @php
                                                 $participantes = Illuminate\Support\Facades\DB::table('chat_user')
