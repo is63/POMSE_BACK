@@ -56,8 +56,14 @@ class AuthController extends Controller
         ]);
 
         $user = DB::table('users')->where('email', $attibutes['email'])->first();
+        // Comprobar si el usuario existe
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => 'El email o la contraseña no son correctos'
+            ]);
+        }
         //verificar si el usuario es admin
-        if(!$user->is_admin){
+        if (!$user->is_admin) {
             throw ValidationException::withMessages([
                 'email' => 'El usuario no tiene permisos para acceder a esta pagina'
             ]);
@@ -76,7 +82,7 @@ class AuthController extends Controller
         return redirect('/')->with('success', 'Bienvenido de nuevo');
     }
 
-//Metodos de Logout
+    //Metodos de Logout
     public
     function destroy()
     {
