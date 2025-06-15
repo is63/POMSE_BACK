@@ -33,11 +33,20 @@ class UserController extends Controller
         $data = request()->validate([
             'usuario' => 'required|string|max:16|unique:users',
             'email' => 'required|email|unique:users',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,avif,webp',
             'password' => 'required|min:6',
             'is_admin' => 'boolean|nullable',
             'verificado' => 'boolean|nullable',
             'bio' => 'string|nullable',
         ]);
+
+        $foto = request()->file('profile_image');
+        if ($foto) {
+            $data['foto'] = 'storage/' . $foto->store('imagenes', 'public');
+        } else {
+            $data['foto'] = null;
+        }
+        unset($data['profile_image']);
 
         $data['is_admin'] = isset($data['is_admin']) ? 1 : 0;
         $data['verificado'] = isset($data['verificado']) ? 1 : 0;
