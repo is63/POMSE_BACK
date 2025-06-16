@@ -43,7 +43,14 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Establece la propiedad y permisos correctos para los directorios de Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/public/storage \
+    && rm -rf /var/www/html/public/storage \
+    && ln -s /var/www/html/storage/app/public /var/www/html/public/storage \
+    && chmod -R 777 /var/www/html/storage/app/public \
+    && chmod -R 777 /var/www/html/public/storage \
+    && chown -R www-data:www-data /var/www/html/storage/app/public \
+    && chown -R www-data:www-data /var/www/html/public/storage
 
 EXPOSE 80
 
